@@ -27,36 +27,51 @@
         </div>
         <h3>欢迎使用 Guns</h3>
         <br/>
-        <h4 style="color: red;">${tips!}</h4>
-        <form class="m-t" role="form" action="${ctxPath}/login" method="post">
+        <h4 style="color: red;" id="tips">${tips!}</h4>
+        <!-- <form class="m-t" role="form" action="${ctxPath}/login" method="post"> -->
             <div class="form-group">
-                <input type="text" name="username" class="form-control" placeholder="用户名" required="">
+                <input type="text" name="username" id="account" class="form-control" placeholder="用户名" required="">
             </div>
             <div class="form-group">
-                <input type="password" name="password" class="form-control" placeholder="密码" required="">
+                <input type="password" name="password" id="password" class="form-control" placeholder="密码" required="">
             </div>
-            @if(tool.getKaptchaOnOff() == true){
-                <div class="form-group" style="float: left;">
-                    <div class="col-sm-8" style="padding-left: 0px; padding-right: 0px;">
-                        <input class="form-control" type="text" name="kaptcha" placeholder="验证码" required="">
-                    </div>
-                    <div class="col-sm-4" style="padding-left: 0px; padding-right: 0px;">
-                        <img src="${ctxPath}/kaptcha" id="kaptcha" width="100%" height="100%"/>
-                    </div>
-                </div>
-            @}
-            <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
-            </p>
-        </form>
+            <button type="submit" class="btn btn-primary block full-width m-b" onclick="login()">登 录</button>
+            <!-- </p> -->
+        <!-- </form> -->
     </div>
 </div>
 
 <script>
-    $(function(){
-        $("#kaptcha").on('click',function(){
-            $("#kaptcha").attr('src', '${ctxPath}/kaptcha?' + Math.floor(Math.random()*100) ).fadeIn();
-        });
+function login(){
+	var account = $("#account").val();
+	if(account == ''){
+		$("#tips").html("账号不能空");
+		return;
+	}
+	var password = $("#password").val();
+	if(password == ''){
+		$("#tips").html("密码不能空");
+		return;
+	}
+	var loginReqData = {};
+	loginReqData['account'] = account;
+	loginReqData['password'] = password;
+    $.ajax({
+        type: 'post',
+        url: '${ctxPath}/login',
+        data: JSON.stringify(loginReqData),
+        dataType: 'json',
+        contentType : 'application/json',
+        success: function getData(data) {
+           if(data.code == 1){
+			   //alert('操作成功');
+			   window.location.href="${ctxPath}/index" 
+		   }else{
+			   $("#tips").html(data.message);
+		   }
+        }
     });
+}
 </script>
 
 </body>

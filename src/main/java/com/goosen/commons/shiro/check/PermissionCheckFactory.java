@@ -20,7 +20,7 @@ import com.goosen.commons.shiro.ShiroKit;
 import com.goosen.commons.shiro.ShiroUser;
 import com.goosen.commons.support.CollectionKit;
 import com.goosen.commons.support.HttpKit;
-import com.goosen.commons.utils.SpringContextHolder;
+//import com.goosen.commons.utils.SpringContextHolder;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +31,13 @@ import javax.servlet.http.HttpServletRequest;
  * 权限自定义检查
  */
 @Service
-@DependsOn("springContextHolder")
+//@DependsOn("springContextHolder")
 @Transactional(readOnly = true)
 public class PermissionCheckFactory implements ICheck {
 
-    public static ICheck me() {
-        return SpringContextHolder.getBean(ICheck.class);
-    }
+//    public static ICheck me() {
+//        return SpringContextHolder.getBean(ICheck.class);
+//    }
 
     @Override
     public boolean check(Object[] permissions) {

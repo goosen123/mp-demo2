@@ -35,6 +35,9 @@ public class BaseController {
 
 	protected static final String FAILURE = "failure";
 	protected static final String SUCCESS = "success";
+	
+	protected static String REDIRECT = "redirect:";
+    protected static String FORWARD = "forward:";
 
 	/**
 	 * 默认页为1

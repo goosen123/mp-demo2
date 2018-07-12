@@ -4,11 +4,16 @@ package com.goosen.commons.shiro.factory;
 //import com.stylefeng.guns.common.constant.state.ManagerStatus;
 //import com.stylefeng.guns.common.persistence.dao.MenuMapper;
 //import com.stylefeng.guns.common.persistence.dao.UserMapper;
+import com.goosen.commons.enums.ResultCode;
+import com.goosen.commons.exception.BusinessException;
 import com.goosen.commons.model.po.User;
 import com.goosen.commons.shiro.ShiroUser;
 //import com.stylefeng.guns.core.util.Convert;
 import com.goosen.commons.service.UserService;
-import com.goosen.commons.utils.SpringContextHolder;
+//import com.goosen.commons.utils.SpringContextHolder;
+
+
+import com.goosen.commons.utils.EncryUtil;
 
 import org.apache.shiro.authc.CredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -26,30 +31,32 @@ import java.util.List;
 import javax.annotation.Resource;
 
 @Service
-@DependsOn("springContextHolder")
+//@DependsOn("springContextHolder")
 @Transactional(readOnly = true)
 public class ShiroFactroy implements IShiro {
 
 	@Resource
+//	@Autowired
 	private UserService userService;
 
 //    @Autowired
 //    private MenuMapper menuMapper;
 
-    public static IShiro me() {
-        return SpringContextHolder.getBean(IShiro.class);
-    }
+//    public static IShiro me() {
+//        return SpringContextHolder.getBean(IShiro.class);
+//    }
 
     @Override
     public User user(String account) {
 
     	User userParams = new User();
     	userParams.setAccount(account);
+    	userParams.setUserType(1);
         User user = userService.findOne(userParams);//getByAccount(account);
 
         // 账号不存在
         if (null == user) {
-            throw new CredentialsException();
+        	throw new BusinessException(ResultCode.USER_NOT_EXIST);
         }
         // 账号被冻结
 //        if (user.getStatus() != ManagerStatus.OK.getCode()) {
@@ -107,7 +114,7 @@ public class ShiroFactroy implements IShiro {
 
     @Override
     public SimpleAuthenticationInfo info(ShiroUser shiroUser, User user, String realmName) {
-        String credentials = user.getPassword();
+        String credentials = EncryUtil.encodeByMD5("123456");//user.getPassword();
         // 密码加盐处理
         String source = "8l9ws";//user.getSalt();
         ByteSource credentialsSalt = new Md5Hash(source);

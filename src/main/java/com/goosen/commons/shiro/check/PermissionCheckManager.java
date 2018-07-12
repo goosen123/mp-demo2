@@ -15,7 +15,11 @@
  */
 package com.goosen.commons.shiro.check;
 
-import com.goosen.commons.utils.SpringContextHolder;
+import javax.annotation.Resource;
+
+import com.goosen.commons.service.UserService;
+
+//import com.goosen.commons.utils.SpringContextHolder;
 
 /**
  * 权限检查工厂
@@ -23,7 +27,11 @@ import com.goosen.commons.utils.SpringContextHolder;
 public class PermissionCheckManager {
     private final static PermissionCheckManager me = new PermissionCheckManager();
 
-    private ICheck defaultCheckFactory = SpringContextHolder.getBean(ICheck.class);
+//    private ICheck defaultCheckFactory = SpringContextHolder.getBean(ICheck.class);
+    @Resource
+//	@Autowired
+	private ICheck iCheck;
+    
 
     public static PermissionCheckManager me() {
         return me;
@@ -33,18 +41,18 @@ public class PermissionCheckManager {
     }
 
     public PermissionCheckManager(ICheck checkFactory) {
-        this.defaultCheckFactory = checkFactory;
+        this.iCheck = checkFactory;
     }
 
     public void setDefaultCheckFactory(ICheck defaultCheckFactory) {
-        this.defaultCheckFactory = defaultCheckFactory;
+        this.iCheck = defaultCheckFactory;
     }
 
     public static boolean check(Object[] permissions) {
-        return me.defaultCheckFactory.check(permissions);
+        return me.iCheck.check(permissions);
     }
 
     public static boolean checkAll() {
-        return me.defaultCheckFactory.checkAll();
+        return me.iCheck.checkAll();
     }
 }

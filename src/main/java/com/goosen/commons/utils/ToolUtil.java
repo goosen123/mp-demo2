@@ -15,8 +15,8 @@
  */
 package com.goosen.commons.utils;
 
-import com.stylefeng.guns.config.properties.GunsProperties;
-import com.stylefeng.guns.core.support.StrKit;
+//import com.stylefeng.guns.config.properties.GunsProperties;
+//import com.stylefeng.guns.core.support.StrKit;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,13 +36,13 @@ public class ToolUtil {
      * @author stylefeng
      * @Date 2017/4/18 12:55
      */
-    public static String dateType(Object o){
-        if(o instanceof Date){
-            return DateUtil.getDay((Date) o);
-        }else{
-            return o.toString();
-        }
-    }
+//    public static String dateType(Object o){
+//        if(o instanceof Date){
+//            return DateUtil.getDay((Date) o);
+//        }else{
+//            return o.toString();
+//        }
+//    }
 
     /**
      * 获取异常的具体信息
@@ -331,9 +331,9 @@ public class ToolUtil {
      * @param values   参数值
      * @return 格式化后的文本
      */
-    public static String format(String template, Object... values) {
-        return StrKit.format(template, values);
-    }
+//    public static String format(String template, Object... values) {
+//        return StrKit.format(template, values);
+//    }
 
     /**
      * 格式化文本
@@ -342,9 +342,9 @@ public class ToolUtil {
      * @param map      参数值对
      * @return 格式化后的文本
      */
-    public static String format(String template, Map<?, ?> map) {
-        return StrKit.format(template, map);
-    }
+//    public static String format(String template, Map<?, ?> map) {
+//        return StrKit.format(template, map);
+//    }
 
     /**
      * 强转->string,并去掉多余空格
@@ -501,9 +501,9 @@ public class ToolUtil {
      * @author stylefeng
      * @Date 2017/5/7 21:56
      */
-    public static String currentTime(){
-        return DateUtil.getTime();
-    }
+//    public static String currentTime(){
+//        return DateUtil.getTime();
+//    }
 
     /**
      * 首字母大写
@@ -511,9 +511,9 @@ public class ToolUtil {
      * @author stylefeng
      * @Date 2017/5/7 22:01
      */
-    public static String firstLetterToUpper(String val){
-        return StrKit.firstCharToUpperCase(val);
-    }
+//    public static String firstLetterToUpper(String val){
+//        return StrKit.firstCharToUpperCase(val);
+//    }
 
     /**
      * 首字母小写
@@ -521,9 +521,9 @@ public class ToolUtil {
      * @author stylefeng
      * @Date 2017/5/7 22:02
      */
-    public static String firstLetterToLower(String val){
-        return StrKit.firstCharToLowerCase(val);
-    }
+//    public static String firstLetterToLower(String val){
+//        return StrKit.firstCharToLowerCase(val);
+//    }
 
     /**
      * 获取验证码开关
@@ -531,9 +531,9 @@ public class ToolUtil {
      * @author stylefeng
      * @Date 2017/5/23 22:34
      */
-    public static Boolean getKaptchaOnOff(){
-        return SpringContextHolder.getBean(GunsProperties.class).getKaptchaOpen();
-    }
+//    public static Boolean getKaptchaOnOff(){
+//        return SpringContextHolder.getBean(GunsProperties.class).getKaptchaOpen();
+//    }
 
     /**
      * 判断是否是windows操作系统
