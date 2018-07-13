@@ -5,11 +5,12 @@
         <ul class="nav" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element">
+                	<!-- ${ctxPath}/kaptcha/ -->
                     <span><img alt="image" class="img-circle"
                                @if(isEmpty(avatar)){
                                     src="${ctxPath}/static/img/girl.gif"
                                @}else{
-                                    src="${ctxPath}/kaptcha/${avatar}"
+                                    src="${avatar}"
                                @}
                                width="64px" height="64px"/></span>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">

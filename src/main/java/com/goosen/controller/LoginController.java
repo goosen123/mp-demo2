@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.goosen.commons.annotations.GetMappingNoLog;
 import com.goosen.commons.annotations.ResponseResult;
 import com.goosen.commons.enums.ResultCode;
 import com.goosen.commons.exception.BusinessException;
@@ -31,6 +32,8 @@ import com.goosen.commons.model.po.UserRole;
 import com.goosen.commons.model.request.login.LoginReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.login.LoginRespData;
+import com.goosen.commons.node.MenuNode;
+import com.goosen.commons.service.MenuService;
 import com.goosen.commons.service.UserRoleService;
 import com.goosen.commons.service.UserService;
 import com.goosen.commons.shiro.ShiroKit;
@@ -50,46 +53,50 @@ public class LoginController extends BaseController{
 	private UserService userService;
 	@Resource
 	private UserRoleService userRoleService;
+	@Resource
+	private MenuService menuService;
 	
 	/**
      * 跳转到主页
      */
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
+	@GetMappingNoLog
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(Model model) {
         //获取菜单列表
-//        List<String> roleList = ShiroKit.getUser().getRoleList();
-//        if(roleList == null || roleList.size() == 0){
-//            ShiroKit.getSubject().logout();
-//            model.addAttribute("tips", "该用户没有角色，无法登陆");
-//            return "/login.html";
-//        }
-//        List<MenuNode> menus = menuMapper.getMenusByRoleIds(roleList);
-//        List<MenuNode> titles = MenuNode.buildTitle(menus);
-//        model.addAttribute("titles", titles);
+        List<String> roleList = ShiroKit.getUser().getRoleList();
+        if(roleList == null || roleList.size() == 0){
+            ShiroKit.getSubject().logout();
+            model.addAttribute("tips", "该用户没有角色，无法登陆");
+            return "/login.html";
+        }
+        List<MenuNode> menus = menuService.getMenusByRoleIds(roleList);
+        List<MenuNode> titles = MenuNode.buildTitle(menus);
+        model.addAttribute("titles", titles);
 
         //获取用户头像
-//        String id = ShiroKit.getUser().getId();
-//        User user = userService.findById(id);
-//        String avatar = user.getAvatar();
-//        model.addAttribute("avatar", avatar);
+        String id = ShiroKit.getUser().getId();
+        User user = userService.findById(id);
+        String avatar = user.getAvatar();
+        model.addAttribute("avatar", avatar);
 
         return "/index.html";
     }
 	
+	@GetMappingNoLog
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
-//		if (ShiroKit.isAuthenticated() || ShiroKit.getUser() != null) {
-//            return REDIRECT + "/";
-//        } else {
+		if (ShiroKit.isAuthenticated() || ShiroKit.getUser() != null) {
+            return REDIRECT + "/";
+        } else {
             return "/login.html";
-//        }
+        }
     }
 	
 	@ApiOperation(value="登录")
 	@ResponseResult
 	@RequestMapping(value = {"login"},method=RequestMethod.POST)
 	@ResponseBody
-	public LoginRespData login(@Validated @RequestBody LoginReqData reqData){//
+	public LoginRespData login(@Validated @RequestBody LoginReqData reqData){
 		
 		if(reqData == null)
 			throw new BusinessException(ResultCode.PARAM_IS_BLANK);
@@ -98,7 +105,7 @@ public class LoginController extends BaseController{
 		String account = reqData.getAccount();
 		//管理员
 		Integer userType = 1;
-		String password = EncryUtil.encodeByMD5("123456");//reqData.getPassword();
+		String password = "b00a7ed95a0dd3f6bf5cb68c6bb547a6";//EncryUtil.encodeByMD5("123456");//reqData.getPassword();
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("account", account);
 		params.put("userType", userType);
@@ -134,7 +141,7 @@ public class LoginController extends BaseController{
 		
 		Subject currentUser = ShiroKit.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(account, password);//password.toCharArray()
-//        token.setRememberMe(true);
+        //token.setRememberMe(true);
         
         currentUser.login(token);
         
@@ -146,6 +153,7 @@ public class LoginController extends BaseController{
 		return loginRespData;
 	}
 	
+	@GetMappingNoLog
 	@RequestMapping(value = {"logout"},method=RequestMethod.GET)
 	public String logout() {
 		ShiroKit.getSubject().logout();

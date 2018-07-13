@@ -12,11 +12,13 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
@@ -39,18 +41,29 @@ import com.goosen.commons.utils.CommonUtil;
 import com.goosen.commons.utils.IdGenUtil;
 
 @Api(value="角色管理",description="角色管理")
-@RestController
+@Controller
 @RequestMapping(value="role")
 public class RoleController extends BaseController{
 	
 	protected Logger log = LoggerFactory.getLogger(getClass());
+	private static String PREFIX = "/system/role";
 	
 	@Resource
 	private RoleService roleService;
 	
+	/**
+     * 跳转到角色列表页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value="",method=RequestMethod.GET)
+    public String index() {
+        return PREFIX + "/role.html";
+    }
+	
 	@ApiOperation(value="添加角色")
 	@ResponseResult
 	@RequestMapping(value = {"add"},method=RequestMethod.POST)
+	@ResponseBody
 	public BaseCudRespData<String> add(@Validated @RequestBody RoleReqData reqData){
 		
 		if(reqData == null)
@@ -67,6 +80,7 @@ public class RoleController extends BaseController{
 	@ApiOperation(value="修改角色")
 	@ResponseResult
 	@RequestMapping(value = {"update"},method=RequestMethod.POST)
+	@ResponseBody
 	public BaseCudRespData<String> update(@Validated @RequestBody RoleReqData reqData) {
 		
 		String id = reqData.getId();
@@ -87,6 +101,7 @@ public class RoleController extends BaseController{
 	@GetMappingNoLog
 	@ResponseResult
 	@RequestMapping(value = {"getDetail"},method=RequestMethod.GET)
+	@ResponseBody
     public RoleRespData getDetail(@ApiParam(name="id",value="角色id",required=true)String id){
 		
 		CheckUtil.notEmpty("id", "id", "id不能空");
@@ -102,6 +117,7 @@ public class RoleController extends BaseController{
 	@GetMappingNoLog
 	@ResponseResult
 	@RequestMapping(value = {"getList"},method=RequestMethod.GET)
+	@ResponseBody
     public List<RoleRespData> getList(@ApiParam(name="name",value="角色名称")String name) throws Exception{
 		
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -116,6 +132,7 @@ public class RoleController extends BaseController{
 	@GetMappingNoLog
 	@ResponseResult
 	@RequestMapping(value = {"getListByPage"},method=RequestMethod.GET)
+	@ResponseBody
     public PageInfo<RoleRespData> getListByPage(@ApiParam(name="pageNum",value="当前页数")Integer pageNum,@ApiParam(name="pageSize",value="页大小")Integer pageSize,@ApiParam(name="name",value="角色名称")String name) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -130,6 +147,7 @@ public class RoleController extends BaseController{
 	@ApiOperation(value="删除角色")
 	@ResponseResult
 	@RequestMapping(value = {"delete"},method=RequestMethod.POST)
+	@ResponseBody
 	public BaseCudRespData<String> delete(@ApiParam(name="ids",value="角色id集",required=true) @RequestParam("ids")List<Object> ids) {
 		
 		if(ids != null && ids.size() > 0){

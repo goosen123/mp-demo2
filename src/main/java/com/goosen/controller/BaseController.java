@@ -16,8 +16,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.product.ProductRespData;
+import com.goosen.commons.page.PageInfoBT;
+import com.goosen.commons.page.PageReq;
 import com.goosen.commons.utils.BeanUtil;
 import com.goosen.commons.utils.CommonUtil;
+import com.goosen.commons.utils.RequestContextUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,6 +91,33 @@ public class BaseController {
 	protected static final String BASERESPPACKAGE = "com.goosen.commons.model.response.";
 	
 	protected static BaseCudRespData<String> baseCudRespData;
+	
+	/**
+     * 把service层的分页信息，封装为bootstrap table通用的分页封装
+     */
+    protected <T> PageInfoBT<T> packForBT(List<T> page) {
+        return new PageInfoBT<T>(page);
+    }
+
+    public PageReq defaultPage() {
+        HttpServletRequest request = RequestContextUtil.getRequest();
+        int limit = Integer.valueOf(request.getParameter("limit"));
+        int offset = Integer.valueOf(request.getParameter("offset"));
+        String sort = request.getParameter("sort");
+        String order = request.getParameter("order");
+        PageReq pageReq = new PageReq(limit, offset, sort, order);
+        if (CommonUtil.isTrimNull(sort)) {
+            pageReq.setOpenSort(false);
+        } else {
+        	pageReq.setOpenSort(true);
+            if ("asc".equals(order)) {
+                pageReq.setAsc(true);
+            } else {
+                pageReq.setAsc(false);
+            }
+        }
+        return pageReq;
+    }
 	
 //	@InitBinder
 //	protected void initBinder(WebDataBinder binder) {

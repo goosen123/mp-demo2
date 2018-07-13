@@ -19,4 +19,6 @@ public interface UserService extends BaseService<User>{
     
     Map<String,Object> findOneByParams(Map<String,Object> params);
     
+    List<Map<String,Object>> findByParamsByPage2(Map<String,Object> params);
+    
 }

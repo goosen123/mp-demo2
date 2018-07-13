@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.model.po.Menu;
+import com.goosen.commons.node.MenuNode;
 
 /**
  * 菜单接口
@@ -18,5 +19,7 @@ public interface MenuService extends BaseService<Menu>{
     PageInfo<Map<String,Object>> findByParamsByPage(Map<String,Object> params);
     
     Map<String,Object> findOneByParams(Map<String,Object> params);
+    
+    List<MenuNode> getMenusByRoleIds(List<String> roleIds);
     
 }

@@ -65,7 +65,7 @@ function login(){
         success: function getData(data) {
            if(data.code == 1){
 			   //alert('操作成功');
-			   window.location.href="${ctxPath}/index" 
+			   window.location.href="${ctxPath}/" 
 		   }else{
 			   $("#tips").html(data.message);
 		   }

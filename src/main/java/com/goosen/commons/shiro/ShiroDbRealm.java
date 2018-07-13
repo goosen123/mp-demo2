@@ -44,7 +44,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 //        SimpleAuthenticationInfo info = iShiro.info(shiroUser, user, super.getName());
 //        return info;
         
-        String credentials = EncryUtil.encodeByMD5("123456");//user.getPassword();
+        String credentials = "b00a7ed95a0dd3f6bf5cb68c6bb547a6";//EncryUtil.encodeByMD5("123456");//user.getPassword();
         // 密码加盐处理
         String source = "8l9ws";//user.getSalt();
         ByteSource credentialsSalt = new Md5Hash(source);

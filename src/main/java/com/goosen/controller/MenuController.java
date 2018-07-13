@@ -13,11 +13,13 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
@@ -36,18 +38,30 @@ import com.goosen.commons.utils.CommonUtil;
 import com.goosen.commons.utils.IdGenUtil;
 
 @Api(value="菜单管理",description="菜单管理")
-@RestController
+@Controller
 @RequestMapping(value="menu")
 public class MenuController extends BaseController{
 	
 	protected Logger log = LoggerFactory.getLogger(getClass());
+	private static String PREFIX = "/system/menu/";
 	
 	@Resource
 	private MenuService menuService;
 	
+	/**
+     * 跳转到菜单列表列表页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value="",method = RequestMethod.GET)
+    public String index() {
+        return PREFIX + "menu.html";
+    }
+	
+	
 	@ApiOperation(value="添加菜单")
 	@ResponseResult
 	@RequestMapping(value = {"add"},method=RequestMethod.POST)
+	@ResponseBody
 	public BaseCudRespData<String> add(@Validated @RequestBody MenuReqData reqData) throws Exception {
 		
 		if(reqData == null)
@@ -77,6 +91,7 @@ public class MenuController extends BaseController{
 	@ApiOperation(value="修改菜单")
 	@ResponseResult
 	@RequestMapping(value = {"update"},method=RequestMethod.POST)
+	@ResponseBody
 	public BaseCudRespData<String> update(@Validated @RequestBody MenuReqData reqData) throws Exception {
 		
 		String id = reqData.getId();
@@ -97,6 +112,7 @@ public class MenuController extends BaseController{
 	@GetMappingNoLog
 	@ResponseResult
 	@RequestMapping(value = {"getDetail"},method=RequestMethod.GET)
+	@ResponseBody
     public MenuRespData getDetail(@ApiParam(name="id",value="菜单id",required=true)String id) throws Exception {
 		
 		CheckUtil.notEmpty(id, "id", "id不能空");
@@ -112,6 +128,7 @@ public class MenuController extends BaseController{
 	@GetMappingNoLog
 	@ResponseResult
 	@RequestMapping(value = {"getList"},method=RequestMethod.GET)
+	@ResponseBody
     public List<MenuRespData> getList(@ApiParam(name="name",value="菜单名称")String name) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -130,6 +147,7 @@ public class MenuController extends BaseController{
 	@GetMappingNoLog
 	@ResponseResult
 	@RequestMapping(value = {"getListByPage"},method=RequestMethod.GET)
+	@ResponseBody
     public PageInfo<MenuRespData> getListByPage(@ApiParam(name="pageNum",value="当前页数")Integer pageNum,@ApiParam(name="pageSize",value="页大小")Integer pageSize,@ApiParam(name="name",value="菜单名称")String name) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -144,6 +162,7 @@ public class MenuController extends BaseController{
 	@ApiOperation(value="删除菜单")
 	@ResponseResult
 	@RequestMapping(value = {"delete"},method=RequestMethod.POST)
+	@ResponseBody
 	public BaseCudRespData<String> delete(@ApiParam(name="ids",value="菜单id集",required=true) @RequestParam("ids")List<Object> ids) {
 		
 		if(ids == null || ids.size() == 0)

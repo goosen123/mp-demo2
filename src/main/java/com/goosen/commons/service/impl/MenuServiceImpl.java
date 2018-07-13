@@ -12,6 +12,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.dao.MenuMapper;
 import com.goosen.commons.model.po.Menu;
+import com.goosen.commons.node.MenuNode;
 import com.goosen.commons.service.MenuService;
 import com.goosen.commons.utils.CommonUtil;
 
@@ -49,6 +50,11 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements MenuServic
 		if(list != null && list.size() > 0)
 			resultMap = list.get(0);
 		return resultMap;
+	}
+
+	@Override
+	public List<MenuNode> getMenusByRoleIds(List<String> roleIds) {
+		return menuMapper.getMenusByRoleIds(roleIds);
 	}
 
 }

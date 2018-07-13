@@ -79,6 +79,12 @@
         setPaginationType: function (type) {
             this.paginationType = type;
         },
+        /**
+         * 设置请求方式：post 或者 get
+         */
+        setMethod: function (method) {
+            this.method = method;
+        },
 
         /**
          * 设置ajax post请求时候附带的参数
