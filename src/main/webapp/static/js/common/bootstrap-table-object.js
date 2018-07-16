@@ -45,7 +45,13 @@
                     queryParamsType: 'limit', 	//默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
                     queryParams: function (param) {
                         return $.extend(this.queryParams, param);
-                    }, // 向后台传递的自定义参数
+                    }, //向后台传递的自定义参数
+                    //responseHandler: function(res) {
+                        //return {
+                            //"total": res.data.total,//总页数
+                            //"rows": res.data.rows   //数据
+                         //};
+                    //},//匹配后台返回的数据格式
                     sidePagination: this.paginationType,   //分页方式：client客户端分页，server服务端分页（*）
                     search: false,      		//是否显示表格搜索，此搜索是客户端搜索，不会进服务端
                     strictSearch: true,			//设置为 true启用 全匹配搜索，否则为模糊搜索

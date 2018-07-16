@@ -39,6 +39,21 @@
 				AND a.status  = #{status}
 			</if>
 		</where>
+		<!-- <choose>
+            <when test="orderByField != null and orderByField !=''">
+                <choose>
+                    <when test="isAsc">
+                        order by a.${orderByField} ASC
+                    </when>
+                    <otherwise>
+                        order by a.${orderByField} DESC
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                order by a.createTime DESC
+            </otherwise>
+        </choose> -->
 	</select>
 	
 </mapper>

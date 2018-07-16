@@ -13,7 +13,9 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +32,7 @@ import com.goosen.commons.model.po.User;
 import com.goosen.commons.model.request.user.UserReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.user.UserRespData;
+import com.goosen.commons.page.PageInfoBT;
 import com.goosen.commons.page.PageReq;
 import com.goosen.commons.service.UserService;
 import com.goosen.commons.utils.BeanUtil;
@@ -56,6 +59,23 @@ public class UserController extends BaseController{
     @RequestMapping(value = {""},method=RequestMethod.GET)
     public String index() {
         return PREFIX + "user.html";
+    }
+	
+	/**
+     * 跳转到编辑管理员页面
+     */
+//    @Permission
+    @RequestMapping("/user_edit/{userId}")
+    public String userEdit(@PathVariable String userId, Model model) {
+    	CheckUtil.notEmpty("userId", "userId", "用户id不能空");
+		Map<String, Object> params = new HashMap<String, Object>();
+		if(!CommonUtil.isTrimNull(userId))
+			params.put("id", userId);
+		Map<String, Object> map = userService.findOneByParams(params);
+		User user = new User();
+    	if(map != null && map.size() > 0)
+    		BeanUtil.mapToBean(map, user);
+        return PREFIX + "user_edit.html";
     }
 	
 	
@@ -108,12 +128,12 @@ public class UserController extends BaseController{
 	
 	@ApiOperation(value="获取用户详情")
 	@GetMappingNoLog
-	@ResponseResult
-	@RequestMapping(value = {"getDetail"},method=RequestMethod.GET)
+//	@ResponseResult
+	@RequestMapping(value = {"edit"},method=RequestMethod.GET)
 	@ResponseBody
     public UserRespData getDetail(@ApiParam(name="id",value="用户id",required=true)String id){
 		
-		CheckUtil.notEmpty("id", "id", "用户id不能空");
+		CheckUtil.notEmpty(id, "id", "用户id不能空");
 		Map<String, Object> params = new HashMap<String, Object>();
 		if(!CommonUtil.isTrimNull(id))
 			params.put("id", id);
@@ -124,7 +144,7 @@ public class UserController extends BaseController{
 	
 	@ApiOperation(value="获取用户列表")
 	@GetMappingNoLog
-	@ResponseResult
+//	@ResponseResult
 	@RequestMapping(value = {"list"},method=RequestMethod.GET)//
 	@ResponseBody
     public List<UserRespData> list(@ApiParam(name="userName",value="用户名称")String userName) throws Exception{
@@ -153,12 +173,31 @@ public class UserController extends BaseController{
 //        return (PageInfo<UserRespData>) buildBasePageRespData(pageInfo, "user.UserRespData");
 //    }
 	
+//	@ApiOperation(value="分页获取用户列表")
+//	@GetMappingNoLog
+//	//@ResponseResult
+//	@RequestMapping(value = {"listByPage"},method=RequestMethod.GET)
+//	@ResponseBody
+//    public Object listByPage(@ApiParam(name="pageNum",value="当前页数")Integer pageNum,@ApiParam(name="pageSize",value="页大小")Integer pageSize,@ApiParam(name="userName",value="用户名称")String userName) throws Exception {
+//		
+//		Map<String, Object> params = new HashMap<String, Object>();
+//		if(!CommonUtil.isTrimNull(userName))
+//			params.put("userName", userName);
+//		//addPageParams(pageNum, pageSize, params);
+//		PageReq paramsPage = defaultPage();
+//		params.put("pageNum", paramsPage.getOffset());
+//		params.put("pageSize", paramsPage.getLimit());
+//		List<Map<String, Object>> result = userService.findByParamsByPage2(params);
+//		
+//        return packForBT(result);
+//    }
+	
 	@ApiOperation(value="分页获取用户列表")
 	@GetMappingNoLog
-	//@ResponseResult
+	@ResponseResult
 	@RequestMapping(value = {"listByPage"},method=RequestMethod.GET)
 	@ResponseBody
-    public Object listByPage(@ApiParam(name="pageNum",value="当前页数")Integer pageNum,@ApiParam(name="pageSize",value="页大小")Integer pageSize,@ApiParam(name="userName",value="用户名称")String userName) throws Exception {
+    public PageInfoBT<UserRespData> listByPage(@ApiParam(name="pageNum",value="当前页数")Integer pageNum,@ApiParam(name="pageSize",value="页大小")Integer pageSize,@ApiParam(name="userName",value="用户名称")String userName) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		if(!CommonUtil.isTrimNull(userName))
@@ -167,9 +206,9 @@ public class UserController extends BaseController{
 		PageReq paramsPage = defaultPage();
 		params.put("pageNum", paramsPage.getOffset());
 		params.put("pageSize", paramsPage.getLimit());
-		List<Map<String, Object>> result = userService.findByParamsByPage2(params);
+		List<Map<String, Object>> list = userService.findByParamsByPage2(params);
 		
-        return packForBT(result);
+        return (PageInfoBT<UserRespData>) buildBasePageRespData2(list, "user.UserRespData");
     }
 	
 	@ApiOperation(value="删除用户")

@@ -18,7 +18,14 @@ public class PageInfoBT<T> {
     // 总数
     private long total;
 
-    public PageInfoBT(List<T> page) {
+    public PageInfoBT() {
+	}
+	public PageInfoBT(List<T> rows, long total) {
+		this.rows = rows;
+		this.total = total;
+	}
+
+	public PageInfoBT(List<T> page) {
         this.rows = page;
         if (page instanceof Page) {
             this.total = ((Page) page).getTotal();

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.product.ProductRespData;
@@ -101,8 +102,15 @@ public class BaseController {
 
     public PageReq defaultPage() {
         HttpServletRequest request = RequestContextUtil.getRequest();
-        int limit = Integer.valueOf(request.getParameter("limit"));
-        int offset = Integer.valueOf(request.getParameter("offset"));
+        String limitStr = request.getParameter("limit");
+        if(CommonUtil.isTrimNull(limitStr))
+        	limitStr = "10";
+        String offsetStr = request.getParameter("offset");
+        if(CommonUtil.isTrimNull(offsetStr))
+        	offsetStr = "1";
+        int limit = Integer.valueOf(limitStr);
+        int offset = Integer.valueOf(offsetStr);
+        
         String sort = request.getParameter("sort");
         String order = request.getParameter("order");
         PageReq pageReq = new PageReq(limit, offset, sort, order);
@@ -221,6 +229,39 @@ public class BaseController {
 		}
 		BeanUtil.beanCopyUnFieldNotNull(resultPage, pageInfo, "list");
 		resultPage.setList(resultList);
+		return resultPage;
+	}
+	
+	public static Object buildBasePageRespData2(List<Map<String, Object>> pageInfo,String respPackage) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+		
+		
+		PageInfoBT resultPage = new PageInfoBT();
+		resultPage.setRows(new ArrayList<Object>());
+		resultPage.setTotal(0);
+		List<Object> resultList = new ArrayList<Object>();
+		if(pageInfo == null || pageInfo.size() == 0){
+			return resultPage;
+		}
+		
+        if (pageInfo instanceof Page) {
+        	resultPage.setTotal(((Page) pageInfo).getTotal());
+        } else {
+        	resultPage.setTotal(pageInfo.size());
+        }
+		
+		Class c1 = Class.forName(BASERESPPACKAGE+respPackage);
+		for (int i = 0; i < pageInfo.size(); i++) {
+			Object model = c1.newInstance();
+			Map<String, Object> map = pageInfo.get(i);
+			if(map != null && map.size() > 0)
+				BeanUtil.mapToBean(map, model);
+			resultList.add(model);
+		}
+		
+		resultPage.setRows(resultList);
+		
+		//return new PageInfoBT(resultList);
+		
 		return resultPage;
 	}
 	
