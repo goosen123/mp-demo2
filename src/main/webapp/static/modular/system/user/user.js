@@ -52,7 +52,7 @@ MgrUser.openAddMgr = function () {
         area: ['800px', '560px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content: Feng.ctxPath + '/mgr/user_add'
+        content: Feng.ctxPath + '/mgr/add'
     });
     this.layerIndex = index;
 };
@@ -69,7 +69,7 @@ MgrUser.openChangeUser = function () {
             area: ['800px', '450px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/mgr/user_edit/' + this.seItem.id
+            content: Feng.ctxPath + '/mgr/edit?id=' + this.seItem.id
         });
         this.layerIndex = index;
     }
@@ -173,7 +173,7 @@ MgrUser.resetPwd = function () {
 };
 
 MgrUser.resetSearch = function () {
-    $("#name").val("");
+    $("#searchKey").val("");
     $("#beginTime").val("");
     $("#endTime").val("");
 
@@ -183,8 +183,8 @@ MgrUser.resetSearch = function () {
 MgrUser.search = function () {
     var queryData = {};
 
-    queryData['deptid'] = MgrUser.deptid;
-    queryData['name'] = $("#name").val();
+    //queryData['deptid'] = MgrUser.deptid;
+    queryData['searchKey'] = $("#searchKey").val();
     queryData['beginTime'] = $("#beginTime").val();
     queryData['endTime'] = $("#endTime").val();
 
@@ -198,12 +198,12 @@ MgrUser.onClickDept = function (e, treeId, treeNode) {
 
 $(function () {
     var defaultColunms = MgrUser.initColumn();
-    //var table = new BSTable("managerTable", "/mgr/listByPage", defaultColunms);
-    //table.setMethod("get");
-    //table.setPaginationType("server");
-    var table = new BSTable("managerTable", "/mgr/list", defaultColunms);
+    var table = new BSTable("managerTable", "/mgr/listByPage", defaultColunms);
     table.setMethod("get");
-    table.setPaginationType("client");
+    table.setPaginationType("server");
+    //var table = new BSTable("managerTable", "/mgr/list", defaultColunms);
+    //table.setMethod("get");
+    //table.setPaginationType("client");
     MgrUser.table = table.init();
     //var ztree = new $ZTree("deptTree", "/dept/tree");
     //ztree.bindOnClick(MgrUser.onClickDept);

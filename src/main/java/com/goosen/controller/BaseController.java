@@ -96,35 +96,60 @@ public class BaseController {
 	/**
      * 把service层的分页信息，封装为bootstrap table通用的分页封装
      */
-    protected <T> PageInfoBT<T> packForBT(List<T> page) {
-        return new PageInfoBT<T>(page);
-    }
+//    protected <T> PageInfoBT<T> packForBT(List<T> page) {
+//        return new PageInfoBT<T>(page);
+//    }
 
-    public PageReq defaultPage() {
+//    public PageReq defaultPage() {
+//        HttpServletRequest request = RequestContextUtil.getRequest();
+//        String limitStr = request.getParameter("limit");
+//        if(CommonUtil.isTrimNull(limitStr))
+//        	limitStr = "10";
+//        String offsetStr = request.getParameter("offset");
+//        if(CommonUtil.isTrimNull(offsetStr))
+//        	offsetStr = "1";
+//        int limit = Integer.valueOf(limitStr);
+//        int offset = Integer.valueOf(offsetStr);
+//        
+//        String sort = request.getParameter("sort");
+//        String order = request.getParameter("order");
+//        PageReq pageReq = new PageReq(limit, offset, sort, order);
+//        if (CommonUtil.isTrimNull(sort)) {
+//            pageReq.setOpenSort(false);
+//        } else {
+//        	pageReq.setOpenSort(true);
+//            if ("asc".equals(order)) {
+//                pageReq.setAsc(true);
+//            } else {
+//                pageReq.setAsc(false);
+//            }
+//        }
+//        return pageReq;
+//    }
+	
+	public void defaultPage(Map<String, Object> params) {
         HttpServletRequest request = RequestContextUtil.getRequest();
-        String limitStr = request.getParameter("limit");
+        String limitStr = request.getParameter("limit");//页记录数大小（页大小）
         if(CommonUtil.isTrimNull(limitStr))
         	limitStr = "10";
-        String offsetStr = request.getParameter("offset");
+        String offsetStr = request.getParameter("offset");//当前页数
         if(CommonUtil.isTrimNull(offsetStr))
         	offsetStr = "1";
-        int limit = Integer.valueOf(limitStr);
-        int offset = Integer.valueOf(offsetStr);
+        params.put("pageNum", offsetStr);
+		params.put("pageSize", limitStr);
         
-        String sort = request.getParameter("sort");
-        String order = request.getParameter("order");
-        PageReq pageReq = new PageReq(limit, offset, sort, order);
+        String sort = request.getParameter("sort");//排序的字段
+        String order = request.getParameter("order");//倒序或者正序
         if (CommonUtil.isTrimNull(sort)) {
-            pageReq.setOpenSort(false);
+        	params.put("isAsc", false);
         } else {
-        	pageReq.setOpenSort(true);
-            if ("asc".equals(order)) {
-                pageReq.setAsc(true);
+        	params.put("orderByField", sort);
+            if (!CommonUtil.isTrimNull(order) && "asc".equals(order)) {
+            	params.put("isAsc", true);
             } else {
-                pageReq.setAsc(false);
+            	params.put("isAsc", false);
             }
         }
-        return pageReq;
     }
 	
 //	@InitBinder
@@ -232,35 +257,29 @@ public class BaseController {
 		return resultPage;
 	}
 	
-	public static Object buildBasePageRespData2(List<Map<String, Object>> pageInfo,String respPackage) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-		
-		
+	public static Object buildBasePageRespData2(List<Map<String, Object>> list,String respPackage) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 		PageInfoBT resultPage = new PageInfoBT();
 		resultPage.setRows(new ArrayList<Object>());
 		resultPage.setTotal(0);
 		List<Object> resultList = new ArrayList<Object>();
-		if(pageInfo == null || pageInfo.size() == 0){
+		if(list == null || list.size() == 0){
 			return resultPage;
 		}
 		
-        if (pageInfo instanceof Page) {
-        	resultPage.setTotal(((Page) pageInfo).getTotal());
+        if (list instanceof Page) {
+        	resultPage.setTotal(((Page) list).getTotal());
         } else {
-        	resultPage.setTotal(pageInfo.size());
+        	resultPage.setTotal(list.size());
         }
-		
 		Class c1 = Class.forName(BASERESPPACKAGE+respPackage);
-		for (int i = 0; i < pageInfo.size(); i++) {
+		for (int i = 0; i < list.size(); i++) {
 			Object model = c1.newInstance();
-			Map<String, Object> map = pageInfo.get(i);
+			Map<String, Object> map = list.get(i);
 			if(map != null && map.size() > 0)
 				BeanUtil.mapToBean(map, model);
 			resultList.add(model);
 		}
-		
 		resultPage.setRows(resultList);
-		
-		//return new PageInfoBT(resultList);
 		
 		return resultPage;
 	}

@@ -11,20 +11,20 @@ var UserInfoDlg = {
                 }
             }
         },
-        name: {
+        userName: {
             validators: {
                 notEmpty: {
                     message: '姓名不能为空'
                 }
             }
         },
-        citySel: {
-            validators: {
-                notEmpty: {
-                    message: '部门不能为空'
-                }
-            }
-        },
+        //citySel: {
+            //validators: {
+                //notEmpty: {
+                    //message: '部门不能为空'
+                //}
+            //}
+        //},
         password: {
             validators: {
                 notEmpty: {
@@ -142,8 +142,8 @@ UserInfoDlg.hideDeptSelectTree = function () {
  * 收集数据
  */
 UserInfoDlg.collectData = function () {
-    this.set('id').set('account').set('sex').set('password').set('avatar')
-        .set('email').set('name').set('birthday').set('rePassword').set('deptid').set('phone');
+    this.set('id').set('account').set('userSex').set('password').set('avatar')
+        .set('userEmail').set('userName').set('rePassword').set('userPhone');//.set('birthday').set('deptid')
 };
 
 /**
@@ -184,14 +184,22 @@ UserInfoDlg.addSubmit = function () {
         Feng.error("两次密码输入不一致");
         return;
     }
+    
+    //初始一些必填值
+    this.userInfoData['userType'] = 1;
+    this.userInfoData['status'] = 1;
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/mgr/add", function (data) {
-        Feng.success("添加成功!");
-        window.parent.MgrUser.table.refresh();
-        UserInfoDlg.close();
+    	if(data.code == 1){
+    		Feng.success("添加成功!");
+            window.parent.MgrUser.table.refresh();
+            UserInfoDlg.close();
+    	}else{
+    		Feng.error("添加失败!"+data.message);
+    	}
     }, function (data) {
-        Feng.error("添加失败!" + data.responseJSON.message + "!");
+        Feng.error("添加失败!"+data.responseJSON.message);
     });
     ajax.set(this.userInfoData);
     ajax.start();
@@ -224,6 +232,39 @@ UserInfoDlg.editSubmit = function () {
 };
 
 /**
+ * 获取用户信息详情
+ */
+UserInfoDlg.getUserDetail = function () {
+	var id = $("#id").val();
+    if(id == null || id == 'undefined' || id == ''){
+    	return;
+    }
+    var data = {};
+	data['id'] = id;
+    $.ajax({
+        type: 'get',
+        url: Feng.ctxPath + '/mgr/getDetail',
+        data: data,
+        dataType: 'json',
+        contentType : 'application/json',
+        success: function getData(data) {
+           console.log("data",data);
+           if(data.code == 1){
+        	   $("#account").val(data.data.account);
+        	   $("#userEmail").val(data.data.userEmail);
+        	   $("#userName").val(data.data.userName);
+        	   $("#userPhone").val(data.data.userPhone);
+			   $("#userSex").val(data.data.userSex);
+		   }
+        },
+        error: function getErrorData(data) {
+        	;
+        }
+    });
+    
+};
+
+/**
  * 修改密码
  */
 UserInfoDlg.chPwd = function () {
@@ -248,14 +289,17 @@ function onBodyDown(event) {
 
 $(function () {
     Feng.initValidator("userInfoForm", UserInfoDlg.validateFields);
-
-    var ztree = new $ZTree("treeDemo", "/dept/tree");
-    ztree.bindOnClick(UserInfoDlg.onClickDept);
-    ztree.init();
-    instance = ztree;
+    
+    //如果是修改的话，获取用户
+    UserInfoDlg.getUserDetail();
+    
+//    var ztree = new $ZTree("treeDemo", "/dept/tree");
+//    ztree.bindOnClick(UserInfoDlg.onClickDept);
+//    ztree.init();
+//    instance = ztree;
 
     //初始化性别选项
-    $("#sex").val($("#sexValue").val());
+    //$("#sex").val($("#sexValue").val());
 
     // 初始化头像上传
     var avatarUp = new $WebUpload("avatar");

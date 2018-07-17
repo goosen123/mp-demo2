@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +63,25 @@ public class UserController extends BaseController{
     }
 	
 	/**
+     * 跳转到添加管理员页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"add"},method=RequestMethod.GET)
+    public String add() {
+        return PREFIX + "user_add.html";
+    }
+	
+	/**
+     * 跳转到编辑管理员页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"edit"},method=RequestMethod.GET)
+    public String edit(@ApiParam(name="id",value="用户id",required=true)String id,Model model) {
+		model.addAttribute("id", id);
+        return PREFIX + "user_edit.html";
+    }
+	
+	/**
      * 跳转到编辑管理员页面
      */
 //    @Permission
@@ -99,9 +119,9 @@ public class UserController extends BaseController{
 			throw new BusinessException(ResultCode.USER_HAS_EXISTED);
 		
 		User record = new User();
+		BeanUtil.beanCopyNotNull(record, reqData);
 		record.setId(IdGenUtil.uuid());
 		record.setUserMoney(0.0);
-		BeanUtil.beanCopyNotNull(record, reqData);
 		userService.save(record);
 		
 		return buildBaseCudRespData(record.getId());
@@ -109,9 +129,9 @@ public class UserController extends BaseController{
 	
 	@ApiOperation(value="修改用户")
 	@ResponseResult
-	@RequestMapping(value = {"update"},method=RequestMethod.POST)
+	@RequestMapping(value = {"edit"},method=RequestMethod.POST)
 	@ResponseBody
-	public BaseCudRespData<String> update(@Validated @RequestBody UserReqData reqData) {
+	public BaseCudRespData<String> edit(@Validated @RequestBody UserReqData reqData) {
 		
 		String id = reqData.getId();
 		CheckUtil.notEmpty("id", "id", "用户id不能空");
@@ -128,8 +148,8 @@ public class UserController extends BaseController{
 	
 	@ApiOperation(value="获取用户详情")
 	@GetMappingNoLog
-//	@ResponseResult
-	@RequestMapping(value = {"edit"},method=RequestMethod.GET)
+	@ResponseResult
+	@RequestMapping(value = {"getDetail"},method=RequestMethod.GET)
 	@ResponseBody
     public UserRespData getDetail(@ApiParam(name="id",value="用户id",required=true)String id){
 		
@@ -144,7 +164,7 @@ public class UserController extends BaseController{
 	
 	@ApiOperation(value="获取用户列表")
 	@GetMappingNoLog
-//	@ResponseResult
+	@ResponseResult
 	@RequestMapping(value = {"list"},method=RequestMethod.GET)//
 	@ResponseBody
     public List<UserRespData> list(@ApiParam(name="userName",value="用户名称")String userName) throws Exception{
@@ -197,15 +217,15 @@ public class UserController extends BaseController{
 	@ResponseResult
 	@RequestMapping(value = {"listByPage"},method=RequestMethod.GET)
 	@ResponseBody
-    public PageInfoBT<UserRespData> listByPage(@ApiParam(name="pageNum",value="当前页数")Integer pageNum,@ApiParam(name="pageSize",value="页大小")Integer pageSize,@ApiParam(name="userName",value="用户名称")String userName) throws Exception {
+    public PageInfoBT<UserRespData> listByPage(@ApiParam(name="searchKey",value="账号/姓名/手机号")String searchKey,
+    		@ApiParam(name="beginTime",value="注册开始日期") String beginTime,
+    		@ApiParam(name="endTime",value="注册结束日期") String endTime) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
-		if(!CommonUtil.isTrimNull(userName))
-			params.put("userName", userName);
-		//addPageParams(pageNum, pageSize, params);
-		PageReq paramsPage = defaultPage();
-		params.put("pageNum", paramsPage.getOffset());
-		params.put("pageSize", paramsPage.getLimit());
+	    params.put("searchKey", searchKey);
+	    params.put("beginTime", beginTime);
+	    params.put("endTime", endTime);
+		defaultPage(params);
 		List<Map<String, Object>> list = userService.findByParamsByPage2(params);
 		
         return (PageInfoBT<UserRespData>) buildBasePageRespData2(list, "user.UserRespData");

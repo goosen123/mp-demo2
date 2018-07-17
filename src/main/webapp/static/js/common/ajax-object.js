@@ -23,8 +23,9 @@
 		        type: this.type,
 		        url: this.url,
 		        dataType: this.dataType,
+		        contentType : 'application/json',
 		        async: this.async,
-		        data: this.data,
+		        data: JSON.stringify(this.data),//this.data,
 				beforeSend: function(data) {
 					
 				},

@@ -69,6 +69,9 @@ function login(){
 		   }else{
 			   $("#tips").html(data.message);
 		   }
+        },
+        error: function getErrorData(data) {
+        	$("#tips").html(data.responseJSON.message);
         }
     });
 }

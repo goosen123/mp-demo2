@@ -37,9 +37,9 @@ public class UserReqData extends BaseReq{
     @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式不对")
     private String userPhone;
     @EnumValue(enumClass = UserTypeEnum.class, enumMethod = "isValidCode")
-    @ApiModelProperty(value = "用户类型(1：管理员  2：普通用户）",example="1")
+    @ApiModelProperty(value = "用户类型(1：管理员  2：普通用户）",required=true,example="1")
     private Integer userType;
-    @ApiModelProperty(value = "状态(1：启用  2：冻结  3：删除）",example="1")
+    @ApiModelProperty(value = "状态(1：启用  2：冻结  3：删除）",required=true,example="1")
     @EnumValue(enumClass = StatusEnum.class, enumMethod = "isValidCode")
     private Integer status;
     
