@@ -216,16 +216,22 @@ UserInfoDlg.editSubmit = function () {
     if (!this.validate()) {
         return;
     }
+    
+    //初始一些必填值
+    this.userInfoData['userType'] = 1;
+    this.userInfoData['status'] = 1;
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/mgr/edit", function (data) {
-        Feng.success("修改成功!");
-        if (window.parent.MgrUser != undefined) {
+    	if(data.code == 1){
+    		Feng.success("修改成功!");
             window.parent.MgrUser.table.refresh();
             UserInfoDlg.close();
-        }
+    	}else{
+    		Feng.error("添加失败!"+data.message);
+    	}
     }, function (data) {
-        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    	Feng.error("修改失败!"+data.responseJSON.message);
     });
     ajax.set(this.userInfoData);
     ajax.start();

@@ -123,6 +123,18 @@
             this.data = {};
             return this;
         },
+        
+        //性别字段格式化
+        function sexFormatter(value) {
+            if (value == 1) { 
+            	value = '男'; 
+            }else if (value == 2) { 
+            	value = '女'; 
+            }else { 
+            	value = '未知'; 
+            }
+            return value;
+        },
 
         /**
          * 刷新 bootstrap 表格
