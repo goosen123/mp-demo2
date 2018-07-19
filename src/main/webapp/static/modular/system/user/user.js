@@ -18,14 +18,36 @@ MgrUser.initColumn = function () {
         {title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle'},
         {title: '账号', field: 'account', align: 'center', valign: 'middle', sortable: true},
         {title: '姓名', field: 'userName', align: 'center', valign: 'middle', sortable: true},
-        {title: '性别', field: 'userSex', align: 'center', valign: 'middle', sortable: true},
+        {title: '性别', field: 'userSex', align: 'center', valign: 'middle',formatter:sexFormatter, sortable: true},
         {title: '角色', field: 'roleName', align: 'center', valign: 'middle', sortable: true},
         {title: '部门', field: 'deptName', align: 'center', valign: 'middle', sortable: true},
         {title: '邮箱', field: 'userEmail', align: 'center', valign: 'middle', sortable: true},
         {title: '电话', field: 'userPhone', align: 'center', valign: 'middle', sortable: true},
         {title: '创建时间', field: 'createTime', align: 'center', valign: 'middle', sortable: true},
-        {title: '状态', field: 'status', align: 'center', valign: 'middle', sortable: true}];
+        {title: '状态', field: 'status', align: 'center', valign: 'middle',formatter:statusFormatter, sortable: true}];
     return columns;
+};
+
+//性别字段格式化
+function sexFormatter(value) {
+    if (value == 1) { 
+    	value = '男'; 
+    }else if (value == 2) { 
+    	value = '女'; 
+    }else { 
+    	value = '未知'; 
+    }
+    return value;
+};
+//用户状态字段格式化
+function statusFormatter(value) {
+    var state;
+    if (value == '1') {
+    	state = "<span class='badge bg-green'  style='padding:5px 10px;'>启用</span>";
+    }else{
+    	state = "<span class='badge bg-red' style='padding:5px 10px;'>冻结</span>";
+    }
+    return state;
 };
 
 /**
@@ -99,15 +121,21 @@ MgrUser.roleAssign = function () {
 MgrUser.delMgrUser = function () {
     if (this.check()) {
 
-        var operation = function(){
+    	var operation = function(){
             var userId = MgrUser.seItem.id;
+			var ids = new Array();
+			ids[0] = userId;
             var ajax = new $ax(Feng.ctxPath + "/mgr/delete", function () {
-                Feng.success("删除成功!");
-                MgrUser.table.refresh();
+            	if(data.code == 1){
+            		Feng.success("删除成功!");
+                    MgrUser.table.refresh();
+            	}else{
+            		Feng.error("删除失败!"+data.message);
+            	}
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
-            ajax.set("userId", userId);
+            ajax.set('ids',ids);
             ajax.start();
         };
 

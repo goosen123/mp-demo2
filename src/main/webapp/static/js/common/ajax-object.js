@@ -25,7 +25,7 @@
 		        dataType: this.dataType,
 		        contentType : 'application/json',
 		        async: this.async,
-		        data: JSON.stringify(this.data),//this.data,
+		        data: this.data,//JSON.stringify(this.data),//
 				beforeSend: function(data) {
 					
 				},
@@ -37,6 +37,11 @@
 		        }
 		    });
 		}, 
+		
+		setType : function(type){
+			this.type = type;
+			return this;
+		},
 		
 		set : function (key, value) {
 			if (typeof key == "object") {
@@ -53,6 +58,11 @@
 		
 		setData : function(data){
 			this.data = data;
+			return this;
+		},
+		
+		setBeanData : function(){
+			this.data = JSON.stringify(this.data)
 			return this;
 		},
 		

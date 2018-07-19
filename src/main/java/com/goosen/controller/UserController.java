@@ -235,7 +235,7 @@ public class UserController extends BaseController{
 	@ResponseResult
 	@RequestMapping(value = {"delete"},method=RequestMethod.POST)
 	@ResponseBody
-	public BaseCudRespData<String> delete(@ApiParam(name="ids",value="角色id集",required=true) @RequestParam("ids")List<Object> ids) {
+	public BaseCudRespData<String> delete(@ApiParam(name="ids",value="id集",required=true) List<Object> ids) {//@RequestParam("ids")
 		
 		userService.deleteByIds(User.class, "id", ids);
 		

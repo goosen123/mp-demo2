@@ -106,7 +106,7 @@ public class LoginController extends BaseController{
 		String account = reqData.getAccount();
 		//管理员
 		Integer userType = 1;
-		String password = "b00a7ed95a0dd3f6bf5cb68c6bb547a6";//EncryUtil.encodeByMD5("123456");//reqData.getPassword();
+		String password = reqData.getPassword();//"b00a7ed95a0dd3f6bf5cb68c6bb547a6";//EncryUtil.encodeByMD5("123456");//
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("account", account);
 		params.put("userType", userType);
@@ -114,10 +114,10 @@ public class LoginController extends BaseController{
 		if(userMap == null || userMap.size() == 0)
 			throw new BusinessException(ResultCode.USER_NOT_EXIST);
 		//检查密码是否正确
-//		String passwordFan = CommonUtil.getStrValue(userMap, "password");
-//		if(!passwordFan.equals(password))
-//			throw new BusinessException(ResultCode.USER_LOGIN_ERROR);
-		String userId = CommonUtil.getStrValue(userMap, "id");
+		String passwordFan = CommonUtil.getStrValue(userMap, "password");
+		if(!passwordFan.equals(password))
+			throw new BusinessException(ResultCode.USER_LOGIN_ERROR);
+		//String userId = CommonUtil.getStrValue(userMap, "id");
 		
 		//判断是否禁用
 		//检验验证码

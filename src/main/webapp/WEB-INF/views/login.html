@@ -16,6 +16,7 @@
     }</script>
     <script src="${ctxPath}/static/js/jquery.min.js?v=2.1.4"></script>
     <script src="${ctxPath}/static/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="${ctxPath}/static/js/myutils/md5.js"></script>
 </head>
 
 <body class="gray-bg">
@@ -53,6 +54,8 @@ function login(){
 		$("#tips").html("密码不能空");
 		return;
 	}
+	password = hex_md5(password);
+	//password = 'e10adc3949ba59abbe56e057f20f883e';
 	var loginReqData = {};
 	loginReqData['account'] = account;
 	loginReqData['password'] = password;

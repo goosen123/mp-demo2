@@ -41,15 +41,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         User user = iShiro.user(token.getUsername());
         ShiroUser shiroUser = iShiro.shiroUser(user);
-//        SimpleAuthenticationInfo info = iShiro.info(shiroUser, user, super.getName());
-//        return info;
-        
-        String credentials = "b00a7ed95a0dd3f6bf5cb68c6bb547a6";//EncryUtil.encodeByMD5("123456");//user.getPassword();
-        // 密码加盐处理
-        String source = "8l9ws";//user.getSalt();
-        ByteSource credentialsSalt = new Md5Hash(source);
-        String realmName = super.getName();
-        return new SimpleAuthenticationInfo(shiroUser, credentials, credentialsSalt, realmName);
+        SimpleAuthenticationInfo info = iShiro.info(shiroUser, user, super.getName());
+        return info;
     }
 
     /**

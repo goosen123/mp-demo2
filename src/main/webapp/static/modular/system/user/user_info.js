@@ -202,6 +202,7 @@ UserInfoDlg.addSubmit = function () {
         Feng.error("添加失败!"+data.responseJSON.message);
     });
     ajax.set(this.userInfoData);
+    ajax.setBeanData();
     ajax.start();
 };
 
@@ -234,6 +235,7 @@ UserInfoDlg.editSubmit = function () {
     	Feng.error("修改失败!"+data.responseJSON.message);
     });
     ajax.set(this.userInfoData);
+    ajax.setBeanData();
     ajax.start();
 };
 
@@ -247,27 +249,41 @@ UserInfoDlg.getUserDetail = function () {
     }
     var data = {};
 	data['id'] = id;
-    $.ajax({
-        type: 'get',
-        url: Feng.ctxPath + '/mgr/getDetail',
-        data: data,
-        dataType: 'json',
-        contentType : 'application/json',
-        success: function getData(data) {
-           console.log("data",data);
-           if(data.code == 1){
-        	   $("#account").val(data.data.account);
-        	   $("#userEmail").val(data.data.userEmail);
-        	   $("#userName").val(data.data.userName);
-        	   $("#userPhone").val(data.data.userPhone);
+	//提交请求
+    var ajax = new $ax(Feng.ctxPath + "/mgr/getDetail", function (data) {
+    	if(data.code == 1){
+     	   $("#account").val(data.data.account);
+     	   $("#userEmail").val(data.data.userEmail);
+     	   $("#userName").val(data.data.userName);
+     	   $("#userPhone").val(data.data.userPhone);
 			   $("#userSex").val(data.data.userSex);
 		   }
-        },
-        error: function getErrorData(data) {
-        	;
-        }
+    }, function (data) {
+    	;
     });
-    
+    ajax.setType('get');
+    ajax.set(data);
+    ajax.start();
+//	$.ajax({
+//        type: 'get',
+//        url: Feng.ctxPath + '/mgr/getDetail',
+//        data: data,
+//        dataType: 'json',
+//        contentType : 'application/json',
+//        success: function getData(data) {
+//           console.log("data",data);
+//           if(data.code == 1){
+//        	   $("#account").val(data.data.account);
+//        	   $("#userEmail").val(data.data.userEmail);
+//        	   $("#userName").val(data.data.userName);
+//        	   $("#userPhone").val(data.data.userPhone);
+//			   $("#userSex").val(data.data.userSex);
+//		   }
+//        },
+//        error: function getErrorData(data) {
+//        	;
+//        }
+//    });
 };
 
 /**
