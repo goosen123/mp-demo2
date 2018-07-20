@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50625
 File Encoding         : 65001
 
-Date: 2018-07-19 18:43:41
+Date: 2018-07-20 18:35:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -187,12 +187,17 @@ INSERT INTO `sys_menu` VALUES ('0f537a7c434e4f3a979e434224696bf3', 'menu', 'syst
 INSERT INTO `sys_menu` VALUES ('302069d545d047298198be565d77f28c', 'menu_add', 'menu', '[0],[system],[menu],', '添加菜单', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/menu/add', '1', '3', '0', '按钮', '1', '1', '2018-07-13 14:37:13', '2018-07-13 14:37:13');
 INSERT INTO `sys_menu` VALUES ('30d1c5639e294d338d43277bbacfc9cf', 'mgr', 'system', '[0],[system],', '用户管理', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/mgr', '1', '2', '1', '菜单', '1', '1', '2018-07-05 17:34:07', '2018-07-05 17:34:07');
 INSERT INTO `sys_menu` VALUES ('3ca03d5f76164609be142b83a7e69b90', 'role_add', 'role', '[0],[system],[role],', '添加角色', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/role/add', '1', '3', '0', '按钮', '1', '1', '2018-07-13 14:38:31', '2018-07-13 14:38:31');
+INSERT INTO `sys_menu` VALUES ('4be47b5997d4491599f521de14ef2a82', 'mgr_setRole', 'mgr', '[0],[system],[mgr],', '分配角色', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/mgr/setRole', '1', '3', '0', '按钮', '1', '1', '2018-07-20 10:05:49', '2018-07-20 10:05:49');
+INSERT INTO `sys_menu` VALUES ('52e1607b1fd14da8b9b3cde758e479b1', 'menu_remove', 'menu', '[0],[system],[menu],', '删除菜单', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/menu/remove', '3', '3', '0', '按钮', '1', '1', '2018-07-20 10:31:39', '2018-07-20 10:31:39');
 INSERT INTO `sys_menu` VALUES ('530010688db04eacac2aaa0b34857aba', 'role_edit', 'role', '[0],[system],[role],', '修改角色', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/role/edit', '2', '3', '0', '按钮', '1', '1', '2018-07-13 14:38:42', '2018-07-13 14:38:42');
+INSERT INTO `sys_menu` VALUES ('5e732386d265422897c7630a707bdb94', 'mgr_delete', 'mgr', '[0],[system],[mgr],', '删除用户', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/mgr/delete', '1', '3', '0', '按钮', '1', '1', '2018-07-20 10:05:30', '2018-07-20 10:05:30');
+INSERT INTO `sys_menu` VALUES ('6adc3c22a6dd401b98e8de6ff826d7fc', 'role_setAuthority', 'role', '[0],[system],[role],', '配置权限', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/role/setAuthority', '4', '3', '0', '按钮', '1', '1', '2018-07-20 10:32:11', '2018-07-20 10:32:11');
 INSERT INTO `sys_menu` VALUES ('8c0d51a75a8548a08c86f3954615a5c9', 'role', 'system', '[0],[system],', '角色管理', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/role', '1', '2', '1', '菜单', '1', '1', '2018-07-13 14:38:20', '2018-07-13 14:38:20');
 INSERT INTO `sys_menu` VALUES ('92c22123175040b98ed83e094d908027', 'mgr_edit', 'mgr', '[0],[system],[mgr],', '修改用户', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/mgr/edit', '2', '3', '0', '按钮', '1', '1', '2018-07-05 17:34:36', '2018-07-05 17:35:21');
 INSERT INTO `sys_menu` VALUES ('c8ae71bf395b40d6bae1076374072c35', 'system', '0', '[0],', '系统管理', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '#', '1', '1', '1', '菜单', '1', '1', '2018-07-04 15:27:36', '2018-07-04 15:27:36');
 INSERT INTO `sys_menu` VALUES ('ca32f561a7494e42a29dc9d2756ca85c', 'mgr_add', 'mgr', '[0],[system],[mgr],', '添加用户', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/mgr/add', '1', '3', '0', '按钮', '1', '1', '2018-07-05 17:35:37', '2018-07-05 17:35:37');
 INSERT INTO `sys_menu` VALUES ('d61c076c1bc844c186653b57049c8b29', 'menu_edit', 'menu', '[0],[system],[menu],', '修改菜单', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/menu/edit', '2', '3', '0', '按钮', '1', '1', '2018-07-13 14:37:26', '2018-07-13 14:37:26');
+INSERT INTO `sys_menu` VALUES ('d8c340d7edf94424b7944da45272d26a', 'role_remove', 'role', '[0],[system],[role],', '删除角色', 'http://onm6xj8b2.bkt.clouddn.com/08422fb4-7d88-4794-bede-2b0cb789a805.jpg', '/role/remove', '3', '3', '0', '按钮', '1', '1', '2018-07-20 10:31:55', '2018-07-20 10:31:55');
 
 -- ----------------------------
 -- Table structure for `sys_role`
