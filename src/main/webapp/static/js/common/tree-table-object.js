@@ -35,6 +35,9 @@
                     type: this.method, //请求数据的ajax类型
                     url: this.url,   //请求数据的ajax的url
                     ajaxParams: this.data, //请求数据的ajax的data属性
+                    //responseHandler: function(res) {
+                    	//return res.data;
+                    //},//匹配后台返回的数据格式
                     expandColumn: this.expandColumn,//在哪一列上面显示展开按钮,从0开始
                     striped: true,   //是否各行渐变色
                     expandAll: this.expandAll,  //是否全部展开
@@ -117,6 +120,13 @@
         clear: function () {
             this.data = {};
             return this;
+        },
+        
+        /**
+         * 设置请求方式：post 或者 get
+         */
+        setMethod: function (method) {
+            this.method = method;
         },
 
         /**

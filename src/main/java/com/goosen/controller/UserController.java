@@ -33,6 +33,7 @@ import com.goosen.commons.model.po.User;
 import com.goosen.commons.model.request.user.UserReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.user.UserRespData;
+import com.goosen.commons.page.ListInfoBT;
 import com.goosen.commons.page.PageInfoBT;
 import com.goosen.commons.page.PageReq;
 import com.goosen.commons.service.UserService;
@@ -161,6 +162,21 @@ public class UserController extends BaseController{
 		
         return (UserRespData) buildBaseModelRespData(map, new UserRespData());
     }
+	
+//	@ApiOperation(value="获取用户列表")
+//	@GetMappingNoLog
+//	@ResponseResult
+//	@RequestMapping(value = {"list"},method=RequestMethod.GET)//
+//	@ResponseBody
+//    public ListInfoBT<UserRespData> list(@ApiParam(name="userName",value="用户名称")String userName) throws Exception{
+//		
+//		Map<String, Object> params = new HashMap<String, Object>();
+//		if(!CommonUtil.isTrimNull(userName))
+//			params.put("userName", userName);
+//		List<Map<String, Object>> list = userService.findByParams(params);
+//		
+//		return (ListInfoBT<UserRespData>) buildBaseListRespData2(list, "user.UserRespData");
+//    }
 	
 	@ApiOperation(value="获取用户列表")
 	@GetMappingNoLog

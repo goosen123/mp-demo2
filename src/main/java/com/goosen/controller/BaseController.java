@@ -17,6 +17,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.product.ProductRespData;
+import com.goosen.commons.page.ListInfoBT;
 import com.goosen.commons.page.PageInfoBT;
 import com.goosen.commons.page.PageReq;
 import com.goosen.commons.utils.BeanUtil;
@@ -232,6 +233,29 @@ public class BaseController {
 			resultList.add(model);
 		}
 		return resultList;
+	}
+	
+	public static Object buildBaseListRespData2(List<Map<String, Object>> list,String respPackage) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+		ListInfoBT resultLit = new ListInfoBT();
+		resultLit.setRows(new ArrayList<Object>());
+		resultLit.setTotal(0);
+		List<Object> resultList = new ArrayList<Object>();
+		if(list == null || list.size() == 0){
+			return resultLit;
+		}
+		
+        resultLit.setTotal(list.size());
+		Class c1 = Class.forName(BASERESPPACKAGE+respPackage);
+		for (int i = 0; i < list.size(); i++) {
+			Object model = c1.newInstance();
+			Map<String, Object> map = list.get(i);
+			if(map != null && map.size() > 0)
+				BeanUtil.mapToBean(map, model);
+			resultList.add(model);
+		}
+		resultLit.setRows(resultList);
+		
+		return resultLit;
 	}
 	
 	public static Object buildBasePageRespData(PageInfo<Map<String, Object>> pageInfo,String respPackage) throws ClassNotFoundException, InstantiationException, IllegalAccessException{

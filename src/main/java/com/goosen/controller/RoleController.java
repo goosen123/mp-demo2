@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.annotations.GetMappingNoLog;
 import com.goosen.commons.annotations.ResponseResult;
+import com.goosen.commons.constants.factory.IConstantFactory;
 import com.goosen.commons.enums.ResultCode;
 import com.goosen.commons.exception.BusinessException;
 import com.goosen.commons.model.po.Role;
@@ -33,6 +35,7 @@ import com.goosen.commons.model.request.user.UserReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.role.RoleRespData;
 import com.goosen.commons.model.response.user.UserRespData;
+import com.goosen.commons.page.PageInfoBT;
 import com.goosen.commons.service.RoleService;
 import com.goosen.commons.service.UserService;
 import com.goosen.commons.utils.BeanUtil;
@@ -50,6 +53,8 @@ public class RoleController extends BaseController{
 	
 	@Resource
 	private RoleService roleService;
+	@Resource
+	private IConstantFactory iConstantFactory;
 	
 	/**
      * 跳转到角色列表页面
@@ -58,6 +63,17 @@ public class RoleController extends BaseController{
     @RequestMapping(value="",method=RequestMethod.GET)
     public String index() {
         return PREFIX + "/role.html";
+    }
+	
+	/**
+     * 跳转到权限配置页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"assignPerm"},method=RequestMethod.GET)
+    public String edit(@ApiParam(name="roleId",value="角色id",required=true)String roleId,Model model) {
+		model.addAttribute("roleId", roleId);
+		model.addAttribute("roleName", iConstantFactory.getSingleRoleName(roleId));
+        return PREFIX + "/role_assign.html";
     }
 	
 	@ApiOperation(value="添加角色")
@@ -128,20 +144,36 @@ public class RoleController extends BaseController{
 		return (List<RoleRespData>) buildBaseListRespData(list, "role.RoleRespData");
     }
 	
+//	@ApiOperation(value="分页获取角色列表")
+//	@GetMappingNoLog
+//	@ResponseResult
+//	@RequestMapping(value = {"getListByPage"},method=RequestMethod.GET)
+//	@ResponseBody
+//    public PageInfo<RoleRespData> getListByPage(@ApiParam(name="pageNum",value="当前页数")Integer pageNum,@ApiParam(name="pageSize",value="页大小")Integer pageSize,@ApiParam(name="name",value="角色名称")String name) throws Exception {
+//		
+//		Map<String, Object> params = new HashMap<String, Object>();
+//		if(!CommonUtil.isTrimNull(name))
+//			params.put("name", name);
+//		addPageParams(pageNum, pageSize, params);
+//		PageInfo<Map<String, Object>> pageInfo = roleService.findByParamsByPage(params);
+//		
+//        return (PageInfo<RoleRespData>) buildBasePageRespData(pageInfo, "role.RoleRespData");
+//    }
+	
 	@ApiOperation(value="分页获取角色列表")
 	@GetMappingNoLog
 	@ResponseResult
-	@RequestMapping(value = {"getListByPage"},method=RequestMethod.GET)
+	@RequestMapping(value = {"listByPage"},method=RequestMethod.GET)
 	@ResponseBody
-    public PageInfo<RoleRespData> getListByPage(@ApiParam(name="pageNum",value="当前页数")Integer pageNum,@ApiParam(name="pageSize",value="页大小")Integer pageSize,@ApiParam(name="name",value="角色名称")String name) throws Exception {
+    public PageInfoBT<RoleRespData> listByPage(@ApiParam(name="name",value="角色名称")String name) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		if(!CommonUtil.isTrimNull(name))
 			params.put("name", name);
-		addPageParams(pageNum, pageSize, params);
-		PageInfo<Map<String, Object>> pageInfo = roleService.findByParamsByPage(params);
+		defaultPage(params);
+		List<Map<String, Object>> list = roleService.findByParamsByPage2(params);
 		
-        return (PageInfo<RoleRespData>) buildBasePageRespData(pageInfo, "role.RoleRespData");
+        return (PageInfoBT<RoleRespData>) buildBasePageRespData2(list, "role.RoleRespData");
     }
 	
 	@ApiOperation(value="删除角色")

@@ -42,7 +42,7 @@ function sexFormatter(value) {
 //用户状态字段格式化
 function statusFormatter(value) {
     var state;
-    if (value == '1') {
+    if (value == 1) {
     	state = "<span class='badge bg-green'  style='padding:5px 10px;'>启用</span>";
     }else{
     	state = "<span class='badge bg-red' style='padding:5px 10px;'>冻结</span>";

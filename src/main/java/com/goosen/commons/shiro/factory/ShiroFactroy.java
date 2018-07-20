@@ -157,6 +157,11 @@ public class ShiroFactroy implements IShiro {
 				}
 			}
 		}
+		resUrls.add("/mgr/delete");
+    	resUrls.add("/mgr/setRole");
+		resUrls.add("/menu/remove");
+    	resUrls.add("/role/remove");
+    	resUrls.add("/role/setAuthority");
         return resUrls;
     }
 

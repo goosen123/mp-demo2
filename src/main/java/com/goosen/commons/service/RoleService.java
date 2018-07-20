@@ -19,4 +19,6 @@ public interface RoleService extends BaseService<Role>{
     
     Map<String,Object> findOneByParams(Map<String,Object> params);
     
+    List<Map<String,Object>> findByParamsByPage2(Map<String,Object> params);
+    
 }

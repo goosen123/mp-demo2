@@ -14,16 +14,36 @@ var Menu = {
 Menu.initColumn = function () {
     var columns = [
         {field: 'selectItem', radio: true},
-        {title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle',width:'50px'},
+        //{title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle',width:'50px'},
         {title: '菜单名称', field: 'name', align: 'center', valign: 'middle', sortable: true,width:'17%'},
         {title: '菜单编号', field: 'code', align: 'center', valign: 'middle', sortable: true,width:'12%'},
         {title: '菜单父编号', field: 'pcode', align: 'center', valign: 'middle', sortable: true},
         {title: '请求地址', field: 'url', align: 'center', valign: 'middle', sortable: true,width:'15%'},
         {title: '排序', field: 'num', align: 'center', valign: 'middle', sortable: true},
         {title: '层级', field: 'levels', align: 'center', valign: 'middle', sortable: true},
-        {title: '是否是菜单', field: 'isMenuName', align: 'center', valign: 'middle', sortable: true},
-        {title: '状态', field: 'statusName', align: 'center', valign: 'middle', sortable: true}]
+        {title: '是否是菜单', field: 'ismenu', align: 'center', valign: 'middle',formatter:ismenuFormatter, sortable: true},
+        {title: '状态', field: 'status', align: 'center', valign: 'middle',formatter:statusFormatter, sortable: true}]
     return columns;
+};
+
+//是否菜单字段格式化
+function ismenuFormatter(value) {
+    if (value ==  1) {
+    	value = '是'; 
+    }else{
+    	value = '不是';
+    }
+    return value;
+};
+//菜单状态字段格式化
+function statusFormatter(value) {
+    var state;
+    if (value == 1) {
+    	state = "<span class='badge bg-green'  style='padding:5px 10px;'>启用</span>";
+    }else{
+    	state = "<span class='badge bg-red' style='padding:5px 10px;'>不启用</span>";
+    }
+    return state;
 };
 
 
@@ -109,7 +129,8 @@ Menu.search = function () {
 $(function () {
     var defaultColunms = Menu.initColumn();
     var table = new BSTreeTable(Menu.id, "/menu/list", defaultColunms);
-    table.setExpandColumn(2);
+    table.setMethod("get");
+    table.setExpandColumn(1);//2
     table.setIdField("id");
     table.setCodeField("code");
     table.setParentCodeField("pcode");

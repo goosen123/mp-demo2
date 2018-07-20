@@ -13,6 +13,7 @@ import com.github.pagehelper.PageInfo;
 import com.goosen.commons.dao.MenuMapper;
 import com.goosen.commons.model.po.Menu;
 import com.goosen.commons.node.MenuNode;
+import com.goosen.commons.node.ZTreeNode;
 import com.goosen.commons.service.MenuService;
 import com.goosen.commons.utils.CommonUtil;
 
@@ -55,6 +56,21 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements MenuServic
 	@Override
 	public List<MenuNode> getMenusByRoleIds(List<String> roleIds) {
 		return menuMapper.getMenusByRoleIds(roleIds);
+	}
+
+	@Override
+	public List<String> getMenuIdsByRoleId(String roleId) {
+		return menuMapper.getMenuIdsByRoleId(roleId);
+	}
+
+	@Override
+	public List<ZTreeNode> menuTreeList() {
+		return menuMapper.menuTreeList();
+	}
+
+	@Override
+	public List<ZTreeNode> menuTreeListByMenuIds(List<String> menuIds) {
+		return menuMapper.menuTreeListByMenuIds(menuIds);
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.model.po.Menu;
 import com.goosen.commons.node.MenuNode;
+import com.goosen.commons.node.ZTreeNode;
 
 /**
  * 菜单接口
@@ -20,6 +21,12 @@ public interface MenuService extends BaseService<Menu>{
     
     Map<String,Object> findOneByParams(Map<String,Object> params);
     
+    
     List<MenuNode> getMenusByRoleIds(List<String> roleIds);
+    
+    
+    List<String> getMenuIdsByRoleId(String roleId);
+    List<ZTreeNode> menuTreeList();
+    List<ZTreeNode> menuTreeListByMenuIds(List<String> menuIds);
     
 }

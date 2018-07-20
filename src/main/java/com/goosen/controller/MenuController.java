@@ -31,6 +31,7 @@ import com.goosen.commons.model.po.Menu;
 import com.goosen.commons.model.request.menu.MenuReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.menu.MenuRespData;
+import com.goosen.commons.node.ZTreeNode;
 import com.goosen.commons.service.MenuService;
 import com.goosen.commons.utils.BeanUtil;
 import com.goosen.commons.utils.CheckUtil;
@@ -126,10 +127,10 @@ public class MenuController extends BaseController{
 	
 	@ApiOperation(value="获取菜单列表")
 	@GetMappingNoLog
-	@ResponseResult
-	@RequestMapping(value = {"getList"},method=RequestMethod.GET)
+//	@ResponseResult
+	@RequestMapping(value = {"list"},method=RequestMethod.GET)
 	@ResponseBody
-    public List<MenuRespData> getList(@ApiParam(name="name",value="菜单名称")String name) throws Exception {
+    public List<MenuRespData> list(@ApiParam(name="name",value="菜单名称")String name) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		if(!CommonUtil.isTrimNull(name))
@@ -141,6 +142,25 @@ public class MenuController extends BaseController{
 		List<Map<String, Object>> list = menuService.findByParams(params);
 		
 		return (List<MenuRespData>) buildBaseListRespData(list, "menu.MenuRespData");
+    }
+	
+	@ApiOperation(value="获取菜单树列表")
+	@GetMappingNoLog
+//	@ResponseResult
+	@RequestMapping(value = {"menuTreeListByRoleId"})//,method=RequestMethod.GET
+	@ResponseBody
+    public List<ZTreeNode> menuTreeListByRoleId(@ApiParam(name="roleId",value="菜单id")String roleId) throws Exception {
+		
+		List<String> menuIds = menuService.getMenuIdsByRoleId(roleId);
+		if(menuIds == null || menuIds.size() == 0){
+			List<ZTreeNode> roleTreeList = menuService.menuTreeList();
+            return roleTreeList;
+		}else{
+			List<ZTreeNode> roleTreeListByUserId = menuService.menuTreeListByMenuIds(menuIds);
+            return roleTreeListByUserId;
+		}
+		
+		//return (List<ZTreeNode>) buildBaseListRespData(list, "menu.MenuRespData");
     }
 	
 	@ApiOperation(value="分页获取菜单列表")

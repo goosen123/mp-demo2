@@ -17,7 +17,8 @@ Role.initColumn = function () {
         {title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle'},
         {title: '名称', field: 'name', align: 'center', valign: 'middle', sortable: true},
         {title: '上级角色', field: 'pName', align: 'center', valign: 'middle', sortable: true},
-        {title: '所在部门', field: 'deptName', align: 'center', valign: 'middle', sortable: true},
+        //{title: '所在部门', field: 'deptName', align: 'center', valign: 'middle', sortable: true},
+        {title: '创建时间', field: 'createTime', align: 'center', valign: 'middle', sortable: true},
         {title: '别名', field: 'tips', align: 'center', valign: 'middle', sortable: true}]
     return columns;
 };
@@ -101,7 +102,7 @@ Role.assign = function () {
             area: ['300px', '450px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/role/role_assign/' + this.seItem.id
+            content: Feng.ctxPath + '/role/assignPerm?roleId=' + this.seItem.id
         });
         this.layerIndex = index;
     }
@@ -112,14 +113,16 @@ Role.assign = function () {
  */
 Role.search = function () {
     var queryData = {};
-    queryData['roleName'] = $("#roleName").val();
+    queryData['name'] = $("#roleName").val();
     Role.table.refresh({query: queryData});
 }
 
 $(function () {
     var defaultColunms = Role.initColumn();
-    var table = new BSTable(Role.id, "/role/list", defaultColunms);
-    table.setPaginationType("client");
+//    var table = new BSTable(Role.id, "/role/list", defaultColunms);
+//    table.setPaginationType("client");
+    var table = new BSTable(Role.id, "/role/listByPage", defaultColunms);
+    table.setMethod("get")
     table.init();
     Role.table = table;
 });

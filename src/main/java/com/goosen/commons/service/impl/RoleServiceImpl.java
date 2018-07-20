@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.goosen.commons.dao.UserMapper;
+import com.goosen.commons.dao.RoleMapper;
 import com.goosen.commons.model.po.Role;
 import com.goosen.commons.service.RoleService;
 import com.goosen.commons.utils.CommonUtil;
@@ -25,12 +25,12 @@ import com.goosen.commons.utils.CommonUtil;
 public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleService{
 
     @Autowired
-    private UserMapper userMapper;
+    private RoleMapper roleMapper;
 
     @Transactional(readOnly=true)
 	@Override
 	public List<Map<String, Object>> findByParams(Map<String, Object> params){
-		return userMapper.findByParams(params);
+		return roleMapper.findByParams(params);
 	}
 
     @Transactional(readOnly=true)
@@ -49,6 +49,14 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 		if(list != null && list.size() > 0)
 			resultMap = list.get(0);
 		return resultMap;
+	}
+    
+    @Transactional(readOnly=true)
+	@Override
+	public List<Map<String, Object>> findByParamsByPage2(Map<String, Object> params){
+		PageHelper.startPage(CommonUtil.getIntValue(params, "pageNum"),CommonUtil.getIntValue(params, "pageSize"));
+		List<Map<String, Object>> list = findByParams(params);
+		return list;
 	}
 
 }

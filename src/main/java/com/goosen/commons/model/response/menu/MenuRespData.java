@@ -27,6 +27,8 @@ public class MenuRespData extends BaseResp{
     private String icon;
 	@ApiModelProperty(value = "url地址",example="/mgr")
     private String url;
+    @ApiModelProperty(value = "菜单层级",example="1")
+    private Integer levels;
     @ApiModelProperty(value = "菜单排序号",example="1")
     private Integer num;
     @ApiModelProperty(value = "是否是菜单（1：是  0：不是）",example="1")
@@ -197,6 +199,14 @@ public class MenuRespData extends BaseResp{
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public Integer getLevels() {
+		return levels;
+	}
+
+	public void setLevels(Integer levels) {
+		this.levels = levels;
 	}
 
 	public Integer getNum() {

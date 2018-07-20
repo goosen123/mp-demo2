@@ -9,9 +9,9 @@ package com.goosen.commons.node;
  */
 public class ZTreeNode {
 
-	private Integer id;	//节点id
+	private String id;	//节点id
 	
-	private Integer pId;//父节点id
+	private String pId;//父节点id
 	
 	private String name;//节点名称
 	
@@ -19,19 +19,19 @@ public class ZTreeNode {
 	
 	private Boolean checked;//是否被选中
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
-	public Integer getpId() {
+	public String getpId() {
 		return pId;
 	}
 
-	public void setpId(Integer pId) {
+	public void setpId(String pId) {
 		this.pId = pId;
 	}
 
@@ -70,10 +70,10 @@ public class ZTreeNode {
 	public static ZTreeNode createParent(){
 		ZTreeNode zTreeNode = new ZTreeNode();
 		zTreeNode.setChecked(true);
-		zTreeNode.setId(0);
+		zTreeNode.setId("0");
 		zTreeNode.setName("顶级");
 		zTreeNode.setOpen(true);
-		zTreeNode.setpId(0);
+		zTreeNode.setpId("0");
 		return zTreeNode;
 	}
 }

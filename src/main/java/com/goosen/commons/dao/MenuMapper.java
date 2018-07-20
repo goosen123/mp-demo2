@@ -6,6 +6,7 @@ import java.util.Map;
 import com.goosen.commons.model.po.Menu;
 import com.goosen.commons.model.po.User;
 import com.goosen.commons.node.MenuNode;
+import com.goosen.commons.node.ZTreeNode;
 import com.goosen.commons.utils.MyMapper;
 
 /**
@@ -17,6 +18,11 @@ public interface MenuMapper extends MyMapper<Menu>{
 	
 	public List<Map<String, Object>> findByParams(Map<String, Object> params);
 	
+	
 	List<MenuNode> getMenusByRoleIds(List<String> roleIds);
+	
+	List<String> getMenuIdsByRoleId(String roleId);
+    List<ZTreeNode> menuTreeList();
+    List<ZTreeNode> menuTreeListByMenuIds(List<String> menuIds);
     
 }

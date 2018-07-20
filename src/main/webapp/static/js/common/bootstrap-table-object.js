@@ -115,7 +115,7 @@
             this.data = data;
             return this;
         },
-
+        
         /**
          * 清空ajax post请求参数
          */
