@@ -125,7 +125,9 @@ MgrUser.delMgrUser = function () {
             var userId = MgrUser.seItem.id;
 			var ids = new Array();
 			ids[0] = userId;
-            var ajax = new $ax(Feng.ctxPath + "/mgr/delete", function () {
+			var paramsData = {};
+            paramsData['ids'] = ids;
+            var ajax = new $ax(Feng.ctxPath + "/mgr/delete", function (data) {
             	if(data.code == 1){
             		Feng.success("删除成功!");
                     MgrUser.table.refresh();
@@ -135,7 +137,8 @@ MgrUser.delMgrUser = function () {
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
-            ajax.set('ids',ids);
+            ajax.set(paramsData);
+            ajax.setBeanData();
             ajax.start();
         };
 

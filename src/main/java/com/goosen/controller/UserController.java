@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import com.goosen.commons.annotations.ResponseResult;
 import com.goosen.commons.enums.ResultCode;
 import com.goosen.commons.exception.BusinessException;
 import com.goosen.commons.model.po.User;
+import com.goosen.commons.model.request.BaseDeleteReqData;
 import com.goosen.commons.model.request.user.UserReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.user.UserRespData;
@@ -251,8 +253,10 @@ public class UserController extends BaseController{
 	@ResponseResult
 	@RequestMapping(value = {"delete"},method=RequestMethod.POST)
 	@ResponseBody
-	public BaseCudRespData<String> delete(@ApiParam(name="ids",value="id集",required=true) List<Object> ids) {//@RequestParam("ids")
+	public BaseCudRespData<String> delete(@Validated @RequestBody BaseDeleteReqData reqData) {//List<Object> ids
 		
+		List<Object> ids = reqData.getIds();
+		CheckUtil.check(ids!=null && ids.size() > 0, "ids", "ids不能空");
 		userService.deleteByIds(User.class, "id", ids);
 		
 		return buildBaseCudRespData("");

@@ -98,8 +98,8 @@
         m1.id AS id,
         (
         CASE
-        WHEN (m2.id = 0 OR m2.id IS NULL) THEN
-        0
+        WHEN (m2.id = '0' OR m2.id IS NULL) THEN
+        '0'
         ELSE
         m2.id
         END
@@ -108,7 +108,7 @@
         AS NAME,
         (
         CASE
-        WHEN (m2.id = 0 OR m2.id IS NULL) THEN
+        WHEN (m2.id = '0' OR m2.id IS NULL) THEN
         'true'
         ELSE
         'false'
@@ -126,8 +126,8 @@
         m1.id AS id,
         (
         CASE
-        WHEN (m2.id = 0 OR m2.id IS NULL) THEN
-        0
+        WHEN (m2.id = '0' OR m2.id IS NULL) THEN
+        '0'
         ELSE
         m2.id
         END
@@ -135,7 +135,7 @@
         m1. NAME AS NAME,
         (
         CASE
-        WHEN (m2.id = 0 OR m2.id IS
+        WHEN (m2.id = '0' OR m2.id IS
         NULL) THEN
         'true'
         ELSE
@@ -144,7 +144,7 @@
         ) as isOpen,
         (
         CASE
-        WHEN (m3.ID = 0 OR m3.ID
+        WHEN (m3.ID = '0' OR m3.ID
         IS NULL) THEN
         'false'
         ELSE
