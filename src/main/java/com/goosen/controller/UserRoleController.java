@@ -1,22 +1,23 @@
 package com.goosen.controller;
 
+import java.util.List;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goosen.commons.annotations.ResponseResult;
 import com.goosen.commons.model.po.UserRole;
+import com.goosen.commons.model.request.user.UserRoleReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.service.UserRoleService;
 import com.goosen.commons.utils.CheckUtil;
@@ -35,8 +36,10 @@ public class UserRoleController extends BaseController{
 	@ApiOperation(value="分配角色")
 	@ResponseResult
 	@RequestMapping(value = {"assignRole"},method=RequestMethod.POST)
-	public BaseCudRespData<String> assignPerm(@ApiParam(name="userId",value="用户id",required=true)String userId,@ApiParam(name="roleIds",value="角色id集",required=true) @RequestParam("roleIds")List<Object> roleIds) throws Exception {
+	public BaseCudRespData<String> assignPerm(@Validated @RequestBody UserRoleReqData reqData) throws Exception {
 		
+		String userId = reqData.getUserId();
+		List<Object> roleIds = reqData.getRoleIds();
 		CheckUtil.notEmpty(userId, "userId", "userId不能空");
 		CheckUtil.check(roleIds!=null && roleIds.size() > 0, "roleIds", "roleIds不能空");
 		

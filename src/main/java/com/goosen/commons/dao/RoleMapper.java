@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.goosen.commons.model.po.Role;
+import com.goosen.commons.node.ZTreeNode;
 import com.goosen.commons.utils.MyMapper;
 
 /**
@@ -14,5 +15,10 @@ import com.goosen.commons.utils.MyMapper;
 public interface RoleMapper extends MyMapper<Role>{
 	
 	public List<Map<String, Object>> findByParams(Map<String, Object> params);
+	
+	
+	List<String> getRoleIdsByUserId(String userId);
+    List<ZTreeNode> roleTreeList();
+    List<ZTreeNode> roleTreeListByRoleIds(List<String> roleIds);
     
 }

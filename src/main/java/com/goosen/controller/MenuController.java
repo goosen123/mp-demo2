@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import com.goosen.commons.annotations.ResponseResult;
 import com.goosen.commons.enums.ResultCode;
 import com.goosen.commons.exception.BusinessException;
 import com.goosen.commons.model.po.Menu;
+import com.goosen.commons.model.request.BaseDeleteReqData;
 import com.goosen.commons.model.request.menu.MenuReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.menu.MenuRespData;
@@ -58,6 +60,25 @@ public class MenuController extends BaseController{
         return PREFIX + "menu.html";
     }
 	
+	/**
+     * 跳转到添加菜单页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"add"},method=RequestMethod.GET)
+    public String add() {
+        return PREFIX + "menu_add.html";
+    }
+	
+	/**
+     * 跳转到编辑菜单页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"edit"},method=RequestMethod.GET)
+    public String edit(@ApiParam(name="id",value="id",required=true)String id,Model model) {
+		model.addAttribute("id", id);
+		model.addAttribute("pcodeName", "父编号哈哈");
+        return PREFIX + "menu_edit.html";
+    }
 	
 	@ApiOperation(value="添加菜单")
 	@ResponseResult
@@ -77,13 +98,15 @@ public class MenuController extends BaseController{
 			throw new BusinessException(ResultCode.EXISTED_THE_MENU);
 		
 		Menu record = new Menu();
-		record.setId(IdGenUtil.uuid());
 		BeanUtil.beanCopyNotNull(record, reqData);
+		record.setId(IdGenUtil.uuid());
 		
 		//设置父菜单编号、父菜单编号集、层级
 		menuSetPcode(reqData, record);
 		
 		//添加菜单
+		record.setStatus(1);
+		record.setIsopen(1);
 		menuService.save(record);
 		
 		return buildBaseCudRespData(record.getId());
@@ -91,9 +114,9 @@ public class MenuController extends BaseController{
 	
 	@ApiOperation(value="修改菜单")
 	@ResponseResult
-	@RequestMapping(value = {"update"},method=RequestMethod.POST)
+	@RequestMapping(value = {"edit"},method=RequestMethod.POST)
 	@ResponseBody
-	public BaseCudRespData<String> update(@Validated @RequestBody MenuReqData reqData) throws Exception {
+	public BaseCudRespData<String> edit(@Validated @RequestBody MenuReqData reqData) throws Exception {
 		
 		String id = reqData.getId();
 		CheckUtil.notEmpty("id", "id", "id不能空");
@@ -122,6 +145,22 @@ public class MenuController extends BaseController{
 			params.put("id", id);
 		Map<String, Object> map = menuService.findOneByParams(params);
 		
+		//获取父级菜单的id
+        Menu temp = new Menu();
+        temp.setCode(CommonUtil.getStrValue(map, "pcode"));
+        Menu pMenu = menuService.findOne(temp);
+
+        //如果父级是顶级菜单
+        if (pMenu == null) {
+        	map.put("pcode", "0");
+        	map.put("pcodeName", "");
+        } else {
+            //设置父级菜单的code为父级菜单的id
+            //menu.setPcode(String.valueOf(pMenu.getId()));
+        	map.put("pcode", pMenu.getId());
+        	map.put("pcodeName", pMenu.getName());
+        }
+		
         return (MenuRespData) buildBaseModelRespData(map, new MenuRespData());
     }
 	
@@ -130,11 +169,13 @@ public class MenuController extends BaseController{
 //	@ResponseResult
 	@RequestMapping(value = {"list"},method=RequestMethod.GET)
 	@ResponseBody
-    public List<MenuRespData> list(@ApiParam(name="name",value="菜单名称")String name) throws Exception {
+    public List<MenuRespData> list(@ApiParam(name="name",value="菜单名称")String name,@ApiParam(name="levels",value="层级")String levels) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		if(!CommonUtil.isTrimNull(name))
 			params.put("name", name);
+		if(!CommonUtil.isTrimNull(levels))
+			params.put("levels", levels);
 //		List<Object> ids = new ArrayList<Object>();
 //		ids.add("c8ae71bf395b40d6bae1076374072c35");
 //		ids.add("d31a0ebbf4124bbb93f17077088a7285");
@@ -149,7 +190,7 @@ public class MenuController extends BaseController{
 //	@ResponseResult
 	@RequestMapping(value = {"menuTreeListByRoleId"})//,method=RequestMethod.GET
 	@ResponseBody
-    public List<ZTreeNode> menuTreeListByRoleId(@ApiParam(name="roleId",value="菜单id")String roleId) throws Exception {
+    public List<ZTreeNode> menuTreeListByRoleId(@ApiParam(name="roleId",value="角色id")String roleId) throws Exception {
 		
 		List<String> menuIds = menuService.getMenuIdsByRoleId(roleId);
 		if(menuIds == null || menuIds.size() == 0){
@@ -161,6 +202,17 @@ public class MenuController extends BaseController{
 		}
 		
 		//return (List<ZTreeNode>) buildBaseListRespData(list, "menu.MenuRespData");
+    }
+	
+	/**
+     * 获取菜单列表(选择父级菜单用)
+     */
+    @RequestMapping(value = "/selectMenuTreeList")
+    @ResponseBody
+    public List<ZTreeNode> selectMenuTreeList() {
+        List<ZTreeNode> roleTreeList = menuService.menuTreeList();
+        roleTreeList.add(ZTreeNode.createParent());
+        return roleTreeList;
     }
 	
 	@ApiOperation(value="分页获取菜单列表")
@@ -183,10 +235,10 @@ public class MenuController extends BaseController{
 	@ResponseResult
 	@RequestMapping(value = {"delete"},method=RequestMethod.POST)
 	@ResponseBody
-	public BaseCudRespData<String> delete(@ApiParam(name="ids",value="菜单id集",required=true) @RequestParam("ids")List<Object> ids) {
+	public BaseCudRespData<String> delete(@Validated @RequestBody BaseDeleteReqData reqData) {
 		
-		if(ids == null || ids.size() == 0)
-			throw new BusinessException(ResultCode.PARAM_IS_BLANK);
+		List<Object> ids = reqData.getIds();
+		CheckUtil.check(ids!=null && ids.size() > 0, "ids", "ids不能空");
 		
 		//删除所有子菜单
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -228,25 +280,23 @@ public class MenuController extends BaseController{
      */
     private void menuSetPcode(MenuReqData reqData,Menu menu) throws Exception {
     	//判断是否是一级菜单
-    	String pcode = reqData.getPcode();
-    	if(CommonUtil.isTrimNull(pcode) || pcode.equals("0")){
+    	String pId = reqData.getPcode();
+    	if(CommonUtil.isTrimNull(pId) || pId.equals("0")){
     		menu.setPcode("0");
             menu.setPcodes("[0],");
             menu.setLevels(1);
     	}else{
     		//获取父菜单
-    		Map<String, Object> params = new HashMap<String, Object>();
-    		params.put("code", pcode);
-    		Map<String,Object> menuMapP = menuService.findOneByParams(params);
-    		if(menuMapP == null || menuMapP.size() == 0)
+    		Menu pMenu = menuService.findById(pId);
+    		if(pMenu == null)
     			throw new BusinessException(ResultCode.PMENU_NOT_EXISTED);
-    		Menu pMenu = new Menu();
-    		BeanUtil.mapToBean(menuMapP, pMenu);
-    		//如果编号和父编号一致会导致无限递归
-            if (menu.getCode().equals(pcode)) 
-            	throw new BusinessException(ResultCode.MENU_PCODE_COINCIDENCE);
-            menu.setPcode(pMenu.getCode());
+    		menu.setPcode(pMenu.getCode());
             Integer pLevels = pMenu.getLevels();
+            
+    		//如果编号和父编号一致会导致无限递归
+            if (menu.getCode().equals(menu.getPcode())) 
+            	throw new BusinessException(ResultCode.MENU_PCODE_COINCIDENCE);
+            
             menu.setLevels(pLevels + 1);
             menu.setPcodes(pMenu.getPcodes() + "[" + pMenu.getCode() + "],");
     	}

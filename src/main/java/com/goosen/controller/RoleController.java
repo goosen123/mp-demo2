@@ -20,24 +20,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.github.pagehelper.PageInfo;
 import com.goosen.commons.annotations.GetMappingNoLog;
 import com.goosen.commons.annotations.ResponseResult;
 import com.goosen.commons.constants.factory.IConstantFactory;
 import com.goosen.commons.enums.ResultCode;
 import com.goosen.commons.exception.BusinessException;
 import com.goosen.commons.model.po.Role;
-import com.goosen.commons.model.po.User;
+import com.goosen.commons.model.request.BaseDeleteReqData;
 import com.goosen.commons.model.request.role.RoleReqData;
-import com.goosen.commons.model.request.user.UserReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.role.RoleRespData;
-import com.goosen.commons.model.response.user.UserRespData;
+import com.goosen.commons.node.ZTreeNode;
 import com.goosen.commons.page.PageInfoBT;
 import com.goosen.commons.service.RoleService;
-import com.goosen.commons.service.UserService;
 import com.goosen.commons.utils.BeanUtil;
 import com.goosen.commons.utils.CheckUtil;
 import com.goosen.commons.utils.CommonUtil;
@@ -49,7 +45,7 @@ import com.goosen.commons.utils.IdGenUtil;
 public class RoleController extends BaseController{
 	
 	protected Logger log = LoggerFactory.getLogger(getClass());
-	private static String PREFIX = "/system/role";
+	private static String PREFIX = "/system/role/";
 	
 	@Resource
 	private RoleService roleService;
@@ -62,7 +58,26 @@ public class RoleController extends BaseController{
 	@GetMappingNoLog
     @RequestMapping(value="",method=RequestMethod.GET)
     public String index() {
-        return PREFIX + "/role.html";
+        return PREFIX + "role.html";
+    }
+	
+	/**
+     * 跳转到添加角色页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"add"},method=RequestMethod.GET)
+    public String add() {
+		return PREFIX + "role_add.html";
+    }
+	
+	/**
+     * 跳转到编辑角色页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"edit"},method=RequestMethod.GET)
+    public String edit(@ApiParam(name="id",value="角色id",required=true)String id,Model model) {
+		model.addAttribute("id", id);
+        return PREFIX + "role_edit.html";
     }
 	
 	/**
@@ -70,10 +85,10 @@ public class RoleController extends BaseController{
      */
 	@GetMappingNoLog
     @RequestMapping(value = {"assignPerm"},method=RequestMethod.GET)
-    public String edit(@ApiParam(name="roleId",value="角色id",required=true)String roleId,Model model) {
+    public String assignPerm(@ApiParam(name="roleId",value="角色id",required=true)String roleId,Model model) {
 		model.addAttribute("roleId", roleId);
 		model.addAttribute("roleName", iConstantFactory.getSingleRoleName(roleId));
-        return PREFIX + "/role_assign.html";
+        return PREFIX + "role_assign.html";
     }
 	
 	@ApiOperation(value="添加角色")
@@ -86,8 +101,8 @@ public class RoleController extends BaseController{
 			throw new BusinessException(ResultCode.PARAM_IS_BLANK);
 		
 		Role record = new Role();
-		record.setId(IdGenUtil.uuid());
 		BeanUtil.beanCopyNotNull(record, reqData);
+		record.setId(IdGenUtil.uuid());
 		roleService.save(record);
 		
 		return buildBaseCudRespData(record.getId());
@@ -95,9 +110,9 @@ public class RoleController extends BaseController{
 	
 	@ApiOperation(value="修改角色")
 	@ResponseResult
-	@RequestMapping(value = {"update"},method=RequestMethod.POST)
+	@RequestMapping(value = {"edit"},method=RequestMethod.POST)
 	@ResponseBody
-	public BaseCudRespData<String> update(@Validated @RequestBody RoleReqData reqData) {
+	public BaseCudRespData<String> edit(@Validated @RequestBody RoleReqData reqData) {
 		
 		String id = reqData.getId();
 		CheckUtil.notEmpty("id", "id", "id不能空");
@@ -144,6 +159,25 @@ public class RoleController extends BaseController{
 		return (List<RoleRespData>) buildBaseListRespData(list, "role.RoleRespData");
     }
 	
+	@ApiOperation(value="获取角色树列表")
+	@GetMappingNoLog
+//	@ResponseResult
+	@RequestMapping(value = {"roleTreeListByUserId"})//,method=RequestMethod.GET
+	@ResponseBody
+    public List<ZTreeNode> roleTreeListByUserId(@ApiParam(name="userId",value="用户id")String userId) throws Exception{
+		
+		List<String> roleIds = roleService.getRoleIdsByUserId(userId);
+		if(roleIds == null || roleIds.size() == 0){
+			List<ZTreeNode> roleTreeList = roleService.roleTreeList();
+            return roleTreeList;
+		}else{
+			List<ZTreeNode> roleTreeListByUserId = roleService.roleTreeListByRoleIds(roleIds);
+            return roleTreeListByUserId;
+		}
+		
+//		return (List<RoleRespData>) buildBaseListRespData(list, "role.RoleRespData");
+    }
+	
 //	@ApiOperation(value="分页获取角色列表")
 //	@GetMappingNoLog
 //	@ResponseResult
@@ -180,16 +214,10 @@ public class RoleController extends BaseController{
 	@ResponseResult
 	@RequestMapping(value = {"delete"},method=RequestMethod.POST)
 	@ResponseBody
-	public BaseCudRespData<String> delete(@ApiParam(name="ids",value="角色id集",required=true) @RequestParam("ids")List<Object> ids) {
+	public BaseCudRespData<String> delete(@Validated @RequestBody BaseDeleteReqData reqData) {
 		
-		if(ids != null && ids.size() > 0){
-			for (int i = 0; i < ids.size(); i++) {
-				String id = (String) ids.get(i);
-				if(!CommonUtil.isTrimNull(id) && id.equals("20a00e3f72a54f91a24cb903ac84083f"))
-					throw new BusinessException(ResultCode.SUPER_ADMIN_DELETE);
-			}
-		}
-		
+		List<Object> ids = reqData.getIds();
+		CheckUtil.check(ids!=null && ids.size() > 0, "ids", "ids不能空");
 		roleService.deleteByIds(Role.class, "id", ids);
 		
 		return buildBaseCudRespData("");

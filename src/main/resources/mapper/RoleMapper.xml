@@ -41,4 +41,87 @@
         </choose> 
 	</select>
 	
+	<select id="getRoleIdsByUserId" resultType="String">
+        select roleId from
+        sys_user_role where userId = #{userId}
+    </select>
+    
+    <select id="roleTreeList" resultType="com.goosen.commons.node.ZTreeNode">
+        SELECT
+        m1.id AS id,
+        (
+        CASE
+        WHEN (m2.id = '0' OR m2.id IS NULL) THEN
+        '0'
+        ELSE
+        m2.id
+        END
+        ) AS pId,
+        m1. NAME
+        AS NAME,
+        (
+        CASE
+        WHEN (m2.id = '0' OR m2.id IS NULL) THEN
+        'true'
+        ELSE
+        'false'
+        END
+        ) as isOpen
+        FROM
+        sys_role m1
+        LEFT JOIN sys_role m2 ON m1.pid = m2.id
+        ORDER BY
+        m1.id ASC
+    </select>
+
+    <select id="roleTreeListByRoleIds" resultType="com.goosen.commons.node.ZTreeNode">
+        SELECT
+        m1.id AS id,
+        (
+        CASE
+        WHEN (m2.id = '0' OR m2.id IS NULL) THEN
+        '0'
+        ELSE
+        m2.id
+        END
+        ) AS pId,
+        m1. NAME AS NAME,
+        (
+        CASE
+        WHEN (m2.id = '0' OR m2.id IS
+        NULL) THEN
+        'true'
+        ELSE
+        'false'
+        END
+        ) as isOpen,
+        (
+        CASE
+        WHEN (m3.ID = '0' OR m3.ID
+        IS NULL) THEN
+        'false'
+        ELSE
+        'true'
+        END
+        ) "checked"
+        FROM
+        sys_role m1
+        LEFT JOIN
+        sys_role m2
+        ON m1.pid = m2.id
+        left join (
+        SELECT
+        ID
+        FROM
+        sys_role
+        WHERE
+        ID IN
+        <foreach collection="list" index="index" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+        ) m3 on m1.id = m3.id
+        ORDER BY
+        m1.id ASC
+    </select>
+	
 </mapper>

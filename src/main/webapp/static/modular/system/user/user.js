@@ -109,7 +109,7 @@ MgrUser.roleAssign = function () {
             area: ['300px', '400px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/mgr/role_assign/' + this.seItem.id
+            content: Feng.ctxPath + '/mgr/assignRole?userId=' + this.seItem.id
         });
         this.layerIndex = index;
     }

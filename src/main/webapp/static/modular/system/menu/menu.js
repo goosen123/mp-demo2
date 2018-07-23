@@ -71,7 +71,7 @@ Menu.openAddMenu = function () {
         area: ['830px', '450px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content: Feng.ctxPath + '/menu/menu_add'
+        content: Feng.ctxPath + '/menu/add'
     });
     this.layerIndex = index;
 };
@@ -87,7 +87,7 @@ Menu.openChangeMenu = function () {
             area: ['800px', '450px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/menu/menu_edit/' + this.seItem.id
+            content: Feng.ctxPath + '/menu/edit?id=' + this.seItem.id
         });
         this.layerIndex = index;
     }
@@ -100,13 +100,23 @@ Menu.delMenu = function () {
     if (this.check()) {
 
         var operation = function(){
-            var ajax = new $ax(Feng.ctxPath + "/menu/remove", function (data) {
-                Feng.success("删除成功!");
-                Menu.table.refresh();
+        	var menuId = Menu.seItem.id;
+        	var ids = new Array();
+			ids[0] = menuId;
+			var paramsData = {};
+            paramsData['ids'] = ids;
+            var ajax = new $ax(Feng.ctxPath + "/menu/delete", function (data) {
+            	if(data.code == 1){
+	                Feng.success("删除成功!");
+	                Menu.table.refresh();
+            	}else{
+            		Feng.error("删除失败!"+data.message);
+            	}
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
-            ajax.set("menuId", Menu.seItem.id);
+            ajax.set(paramsData);
+            ajax.setBeanData();
             ajax.start();
         };
 
@@ -120,8 +130,8 @@ Menu.delMenu = function () {
 Menu.search = function () {
     var queryData = {};
 
-    queryData['menuName'] = $("#menuName").val();
-    queryData['level'] = $("#level").val();
+    queryData['name'] = $("#menuName").val();
+    queryData['levels'] = $("#level").val();
 
     Menu.table.refresh({query: queryData});
 }

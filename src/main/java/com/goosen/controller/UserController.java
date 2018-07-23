@@ -4,7 +4,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,17 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.github.pagehelper.PageInfo;
 import com.goosen.commons.annotations.GetMappingNoLog;
 import com.goosen.commons.annotations.ResponseResult;
 import com.goosen.commons.enums.ResultCode;
@@ -35,9 +29,7 @@ import com.goosen.commons.model.request.BaseDeleteReqData;
 import com.goosen.commons.model.request.user.UserReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.user.UserRespData;
-import com.goosen.commons.page.ListInfoBT;
 import com.goosen.commons.page.PageInfoBT;
-import com.goosen.commons.page.PageReq;
 import com.goosen.commons.service.UserService;
 import com.goosen.commons.utils.BeanUtil;
 import com.goosen.commons.utils.CheckUtil;
@@ -85,20 +77,25 @@ public class UserController extends BaseController{
     }
 	
 	/**
-     * 跳转到编辑管理员页面
+     * 跳转到分配角色页面
      */
-//    @Permission
-    @RequestMapping("/user_edit/{userId}")
-    public String userEdit(@PathVariable String userId, Model model) {
-    	CheckUtil.notEmpty("userId", "userId", "用户id不能空");
-		Map<String, Object> params = new HashMap<String, Object>();
-		if(!CommonUtil.isTrimNull(userId))
-			params.put("id", userId);
-		Map<String, Object> map = userService.findOneByParams(params);
-		User user = new User();
-    	if(map != null && map.size() > 0)
-    		BeanUtil.mapToBean(map, user);
-        return PREFIX + "user_edit.html";
+	@GetMappingNoLog
+    @RequestMapping(value = {"assignRole"},method=RequestMethod.GET)
+    public String assignRole(@ApiParam(name="userId",value="用户id",required=true)String userId,Model model) {
+		model.addAttribute("userId", userId);
+		User user = userService.findById(userId);
+		model.addAttribute("userAccount", user.getAccount());
+		return PREFIX + "user_roleassign.html";
+    }
+	
+	/**
+     * 跳转到用户详情页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"userInfo"},method=RequestMethod.GET)
+    public String userInfo(@ApiParam(name="id",value="用户id",required=true)String id,Model model) {
+		model.addAttribute("id", id);
+		return PREFIX + "user_view.html";
     }
 	
 	

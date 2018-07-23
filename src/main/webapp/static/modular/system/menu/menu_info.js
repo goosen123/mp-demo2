@@ -108,13 +108,18 @@ MenuInfoDlg.addSubmit = function () {
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/menu/add", function (data) {
-        Feng.success("添加成功!");
-        window.parent.Menu.table.refresh();
-        MenuInfoDlg.close();
+    	if(data.code == 1){
+	        Feng.success("添加成功!");
+	        window.parent.Menu.table.refresh();
+	        MenuInfoDlg.close();
+    	}else{
+    		Feng.error("添加失败!"+data.message);
+    	}
     }, function (data) {
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.menuInfoData);
+    ajax.setBeanData();
     ajax.start();
 }
 
@@ -132,15 +137,51 @@ MenuInfoDlg.editSubmit = function () {
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/menu/edit", function (data) {
-        Feng.success("修改成功!");
-        window.parent.Menu.table.refresh();
-        MenuInfoDlg.close();
+    	if(data.code == 1){
+	        Feng.success("修改成功!");
+	        window.parent.Menu.table.refresh();
+	        MenuInfoDlg.close();
+    	}else{
+    		Feng.error("修改失败!"+data.message);
+    	}
     }, function (data) {
         Feng.error("修改失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.menuInfoData);
+    ajax.setBeanData();
     ajax.start();
 }
+
+/**
+ * 获取菜单信息详情
+ */
+MenuInfoDlg.getUserDetail = function () {
+	var id = $("#id").val();
+    if(id == null || id == 'undefined' || id == ''){
+    	return;
+    }
+    var data = {};
+	data['id'] = id;
+	//提交请求
+    var ajax = new $ax(Feng.ctxPath + "/menu/getDetail", function (data) {
+    	if(data.code == 1){
+     	   $("#ismenuValue").val(data.data.ismenu);
+     	   $("#name").val(data.data.name);
+     	   $("#code").val(data.data.code);
+     	   $("#pcodeName").val(data.data.pcodeName);
+     	   $("#pcode").val(data.data.pcode);
+		   $("#ismenu").val(data.data.ismenu);
+		   $("#url").val(data.data.url);
+		   $("#num").val(data.data.num);
+		   $("#icon").val(data.data.icon);
+		}
+    }, function (data) {
+    	;
+    });
+    ajax.setType('get');
+    ajax.set(data);
+    ajax.start();
+};
 
 /**
  * 点击父级编号input框时
@@ -160,6 +201,9 @@ MenuInfoDlg.showMenuSelectTree = function () {
 
 $(function () {
     Feng.initValidator("menuInfoForm", MenuInfoDlg.validateFields);
+    
+    //如果是修改的话，获取详情
+    MenuInfoDlg.getUserDetail();
 
     var ztree = new $ZTree("pcodeTree", "/menu/selectMenuTreeList");
     ztree.bindOnClick(MenuInfoDlg.onClickDept);
@@ -167,9 +211,9 @@ $(function () {
     MenuInfoDlg.ztreeInstance = ztree;
 
     //初始化是否是菜单
-    if($("#ismenuValue").val() == undefined){
-        $("#ismenu").val(0);
-    }else{
-        $("#ismenu").val($("#ismenuValue").val());
-    }
+//    if($("#ismenuValue").val() == undefined){
+//        $("#ismenu").val(0);
+//    }else{
+//        $("#ismenu").val($("#ismenuValue").val());
+//    }
 });

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.model.po.Role;
+import com.goosen.commons.node.ZTreeNode;
 
 /**
  * 角色接口
@@ -20,5 +21,10 @@ public interface RoleService extends BaseService<Role>{
     Map<String,Object> findOneByParams(Map<String,Object> params);
     
     List<Map<String,Object>> findByParamsByPage2(Map<String,Object> params);
+    
+    
+    List<String> getRoleIdsByUserId(String userId);
+    List<ZTreeNode> roleTreeList();
+    List<ZTreeNode> roleTreeListByRoleIds(List<String> roleIds);
     
 }

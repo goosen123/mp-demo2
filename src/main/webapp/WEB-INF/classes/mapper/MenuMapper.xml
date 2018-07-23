@@ -26,7 +26,10 @@
 		FROM sys_menu a
 		<where>
 			<if test="name != null and name != ''">
-				AND a.name LIKE CONCAT('%', #{productTitle}, '%')
+				AND a.name LIKE CONCAT('%', #{name}, '%')
+			</if>
+			<if test="levels != null and levels != ''">
+				AND a.levels LIKE CONCAT('%', #{levels}, '%')
 			</if>
 			<if test="pcodes != null and pcodes != ''">
 				AND a.pcodes LIKE CONCAT('%[', #{pcodes}, ']%')

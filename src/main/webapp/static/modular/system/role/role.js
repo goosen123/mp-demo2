@@ -48,7 +48,7 @@ Role.openAddRole = function () {
         area: ['800px', '450px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content: Feng.ctxPath + '/role/role_add'
+        content: Feng.ctxPath + '/role/add'
     });
     this.layerIndex = index;
 };
@@ -64,7 +64,7 @@ Role.openChangeRole = function () {
             area: ['800px', '450px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/role/role_edit/' + this.seItem.id
+            content: Feng.ctxPath + '/role/edit?id=' + this.seItem.id
         });
         this.layerIndex = index;
     }
@@ -77,13 +77,23 @@ Role.delRole = function () {
     if (this.check()) {
 
         var operation = function(){
-            var ajax = new $ax(Feng.ctxPath + "/role/remove", function () {
-                Feng.success("删除成功!");
-                Role.table.refresh();
+        	var roleId = Role.seItem.id;
+        	var ids = new Array();
+			ids[0] = roleId;
+			var paramsData = {};
+            paramsData['ids'] = ids;
+            var ajax = new $ax(Feng.ctxPath + "/role/delete", function () {
+            	if(data.code == 1){
+	                Feng.success("删除成功!");
+	                Role.table.refresh();
+            	}else{
+            		Feng.error("删除失败!"+data.message);
+            	}
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
-            ajax.set("roleId", Role.seItem.id);
+            ajax.set(paramsData);
+            ajax.setBeanData();
             ajax.start();
         };
 
@@ -112,8 +122,10 @@ Role.assign = function () {
  * 搜索角色
  */
 Role.search = function () {
-    var queryData = {};
+	var queryData = {};
+
     queryData['name'] = $("#roleName").val();
+
     Role.table.refresh({query: queryData});
 }
 

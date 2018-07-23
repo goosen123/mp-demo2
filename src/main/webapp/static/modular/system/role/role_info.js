@@ -9,7 +9,7 @@ var RolInfoDlg = {
         name: {
             validators: {
                 notEmpty: {
-                    message: '用户名不能为空'
+                    message: '角色名称不能为空'
                 }
             }
         },
@@ -19,14 +19,15 @@ var RolInfoDlg = {
                     message: '别名不能为空'
                 }
             }
-        },
-        pName: {
-            validators: {
-                notEmpty: {
-                    message: '父级名称不能为空'
-                }
-            }
         }
+//        ,
+//        pName: {
+//            validators: {
+//                notEmpty: {
+//                    message: '父级名称不能为空'
+//                }
+//            }
+//        }
     }
 };
 
@@ -118,7 +119,7 @@ RolInfoDlg.showPNameSelectTree = function () {
  * 收集数据
  */
 RolInfoDlg.collectData = function () {
-    this.set('id').set('name').set('pid').set('deptid').set('tips').set('num');
+    this.set('id').set('name').set('tips').set('num');//.set('pid').set('deptid')
 };
 
 /**
@@ -144,13 +145,18 @@ RolInfoDlg.addSubmit = function () {
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/role/add", function (data) {
-        Feng.success("添加成功!");
-        window.parent.Role.table.refresh();
-        RolInfoDlg.close();
+    	if(data.code == 1){
+	        Feng.success("添加成功!");
+	        window.parent.Role.table.refresh();
+	        RolInfoDlg.close();
+    	}else{
+    		Feng.error("添加失败!"+data.message);
+    	}
     }, function (data) {
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.roleInfoData);
+    ajax.setBeanData();
     ajax.start();
 };
 
@@ -168,27 +174,60 @@ RolInfoDlg.editSubmit = function () {
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/role/edit", function (data) {
-        Feng.success("修改成功!");
-        window.parent.Role.table.refresh();
-        RolInfoDlg.close();
+    	if(data.code == 1){
+	    	Feng.success("修改成功!");
+	        window.parent.Role.table.refresh();
+	        RolInfoDlg.close();
+    	}else{
+    		Feng.error("修改失败!"+data.message);
+    	}
     }, function (data) {
         Feng.error("修改失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.roleInfoData);
+    ajax.setBeanData();
+    ajax.start();
+};
+
+/**
+ * 获取角色信息详情
+ */
+RolInfoDlg.getRoleDetail = function () {
+	var id = $("#id").val();
+    if(id == null || id == 'undefined' || id == ''){
+    	return;
+    }
+    var data = {};
+	data['id'] = id;
+	//提交请求
+    var ajax = new $ax(Feng.ctxPath + "/role/getDetail", function (data) {
+    	if(data.code == 1){
+     	   $("#name").val(data.data.name);
+     	   $("#tips").val(data.data.tips);
+     	   $("#num").val(data.data.num);
+    	}
+    }, function (data) {
+    	;
+    });
+    ajax.setType('get');
+    ajax.set(data);
     ajax.start();
 };
 
 $(function () {
     Feng.initValidator("roleInfoForm", RolInfoDlg.validateFields);
+    
+    //如果是修改的话，获取详情
+    RolInfoDlg.getRoleDetail();
 
-    var deptTree = new $ZTree("deptTree", "/dept/tree");
-    deptTree.bindOnClick(RolInfoDlg.onClickDept);
-    deptTree.bindOnDblClick(RolInfoDlg.onDblClickDept)
-    deptTree.init();
-    RolInfoDlg.deptZtree = deptTree;
+//    var deptTree = new $ZTree("deptTree", "/dept/tree");
+//    deptTree.bindOnClick(RolInfoDlg.onClickDept);
+//    deptTree.bindOnDblClick(RolInfoDlg.onDblClickDept)
+//    deptTree.init();
+//    RolInfoDlg.deptZtree = deptTree;
 
-    var pNameTree = new $ZTree("pNameTree", "/role/roleTreeList");
-    pNameTree.bindOnClick(RolInfoDlg.onClickPName);
-    pNameTree.init();
-    RolInfoDlg.pNameZtree = pNameTree;
+//    var pNameTree = new $ZTree("pNameTree", "/role/roleTreeList");
+//    pNameTree.bindOnClick(RolInfoDlg.onClickPName);
+//    pNameTree.init();
+//    RolInfoDlg.pNameZtree = pNameTree;
 });

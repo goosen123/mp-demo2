@@ -20,6 +20,8 @@ public class MenuRespData extends BaseResp{
 	private String code;
 	@ApiModelProperty(value = "父菜单编号",example="system")
 	private String pcode;
+	@ApiModelProperty(value = "父菜单编号名称",example="系统管理")
+	private String pcodeName;
 	@ApiModelProperty(value = "菜单名称",required=true,example="用户管理")
 	@NotEmpty
     private String name;
@@ -248,5 +250,11 @@ public class MenuRespData extends BaseResp{
 	public void setIsopen(Integer isopen) {
 		this.isopen = isopen;
 	}
-    
+	public String getPcodeName() {
+		return pcodeName;
+	}
+	public void setPcodeName(String pcodeName) {
+		this.pcodeName = pcodeName;
+	}
+	
 }

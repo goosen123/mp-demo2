@@ -12,6 +12,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.goosen.commons.dao.RoleMapper;
 import com.goosen.commons.model.po.Role;
+import com.goosen.commons.node.ZTreeNode;
 import com.goosen.commons.service.RoleService;
 import com.goosen.commons.utils.CommonUtil;
 
@@ -57,6 +58,21 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 		PageHelper.startPage(CommonUtil.getIntValue(params, "pageNum"),CommonUtil.getIntValue(params, "pageSize"));
 		List<Map<String, Object>> list = findByParams(params);
 		return list;
+	}
+
+	@Override
+	public List<String> getRoleIdsByUserId(String userId) {
+		return roleMapper.getRoleIdsByUserId(userId);
+	}
+
+	@Override
+	public List<ZTreeNode> roleTreeList() {
+		return roleMapper.roleTreeList();
+	}
+
+	@Override
+	public List<ZTreeNode> roleTreeListByRoleIds(List<String> roleIds) {
+		return roleMapper.roleTreeListByRoleIds(roleIds);
 	}
 
 }

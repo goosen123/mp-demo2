@@ -256,8 +256,8 @@ UserInfoDlg.getUserDetail = function () {
      	   $("#userEmail").val(data.data.userEmail);
      	   $("#userName").val(data.data.userName);
      	   $("#userPhone").val(data.data.userPhone);
-			   $("#userSex").val(data.data.userSex);
-		   }
+		   $("#userSex").val(data.data.userSex);
+		}
     }, function (data) {
     	;
     });

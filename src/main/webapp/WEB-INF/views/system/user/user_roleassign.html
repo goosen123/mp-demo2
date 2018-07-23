@@ -12,15 +12,29 @@
 
         $("#btn_save").bind("click", function () {
             var ids = Feng.zTreeCheckedNodes("zTree");
-            var ajax = new $ax(Feng.ctxPath + "/mgr/setRole", function (data) {
-                Feng.success("分配角色成功!");
-                window.parent.MgrUser.table.refresh();
-                parent.layer.close(index);
+            var paramsData = {};
+            paramsData['userId'] = "${userId}";
+            var roleIdsArray = new Array();
+            if(ids != null && ids.length > 0){
+                var idsStr = ids.split(",");
+                for(var i=0;i<idsStr.length;i++){
+                	roleIdsArray.push(idsStr[i]);
+        		}
+            }
+            paramsData['roleIds'] = roleIdsArray;
+            var ajax = new $ax(Feng.ctxPath + "/userRole/assignRole", function (data) {
+            	if(data.code == 1){
+            		Feng.success("分配角色成功!");
+                    window.parent.MgrUser.table.refresh();
+                    parent.layer.close(index);
+                }else{
+                	Feng.error("分配角色失败!"+data.message);
+                }
             }, function (data) {
                 Feng.error("分配角色失败!" + data.responseJSON.message + "!");
             });
-            ajax.set("roleIds", ids);
-            ajax.set("userId", "${userId}");
+            ajax.set(paramsData);
+            ajax.setBeanData();
             ajax.start();
         });
 
@@ -43,7 +57,7 @@
             }
         };
 
-        var ztree = new $ZTree("zTree", "/role/roleTreeListByUserId/${userId}");
+        var ztree = new $ZTree("zTree", "/role/roleTreeListByUserId?userId=${userId}");
         ztree.setSettings(setting);
         ztree.init();
     }
