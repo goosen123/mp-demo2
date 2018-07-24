@@ -38,7 +38,32 @@
 			<if test="userId != null and userId != ''">
 				AND a.userId  = #{userId}
 			</if>
+			<if test="searchKey != null and searchKey != ''">
+	            and (a.code like CONCAT('%',#{searchKey},'%')
+	            or a.userName like CONCAT('%',#{searchKey},'%'))
+        	</if>
+        	<if test="beginTime != null and beginTime != ''">
+				AND a.createTime &gt;= CONCAT(#{beginTime},' 00:00:00')
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND a.createTime &lt;= CONCAT(#{endTime},' 23:59:59')
+			</if>
 		</where>
+		<choose>
+            <when test="orderByField != null and orderByField !=''">
+                <choose>
+                    <when test="isAsc">
+                        order by a.${orderByField} ASC
+                    </when>
+                    <otherwise>
+                        order by a.${orderByField} DESC
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                order by a.createTime DESC
+            </otherwise>
+        </choose> 
 	</select>
 	
 	<select id="createOrdersCode" resultType="String">

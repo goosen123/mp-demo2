@@ -1,8 +1,8 @@
 /**
- * 系统管理--用户管理的单例对象
+ * 商城管理--订单管理的单例对象
  */
-var MgrUser = {
-    id: "managerTable",//表格id
+var Orders = {
+    id: "ordersTable",//表格id
     seItem: null,		//选中的条目
     table: null,
     layerIndex: -1,
@@ -12,54 +12,58 @@ var MgrUser = {
 /**
  * 初始化表格的列
  */
-MgrUser.initColumn = function () {
+Orders.initColumn = function () {
     var columns = [
         {field: 'selectItem', radio: true},
         {title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle'},
-        {title: '账号', field: 'account', align: 'center', valign: 'middle', sortable: true},
-        {title: '姓名', field: 'userName', align: 'center', valign: 'middle', sortable: true},
-        {title: '性别', field: 'userSex', align: 'center', valign: 'middle',formatter:sexFormatter, sortable: true},
-        {title: '角色', field: 'roleName', align: 'center', valign: 'middle', sortable: true},
-        {title: '部门', field: 'deptName', align: 'center', valign: 'middle', sortable: true},
-        {title: '邮箱', field: 'userEmail', align: 'center', valign: 'middle', sortable: true},
-        {title: '电话', field: 'userPhone', align: 'center', valign: 'middle', sortable: true},
-        {title: '创建时间', field: 'createTime', align: 'center', valign: 'middle', sortable: true},
-        {title: '状态', field: 'status', align: 'center', valign: 'middle',formatter:statusFormatter, sortable: true}];
+        {title: '用户名称', field: 'userName', align: 'center', valign: 'middle', sortable: true},
+        {title: '订单号', field: 'code', align: 'center', valign: 'middle', sortable: true},
+        {title: '订单标题', field: 'orderTitle', align: 'center', valign: 'middle', sortable: true},
+        {title: '订单总金额（元）', field: 'totalCost', align: 'center', valign: 'middle', sortable: true},
+        {title: '订单总数量', field: 'totalVolume', align: 'center', valign: 'middle', sortable: true},
+        {title: '订单状态', field: 'orderStatus', align: 'center', valign: 'middle',formatter:statusFormatter, sortable: true},
+        {title: '订单备注', field: 'orderRemark', align: 'center', valign: 'middle', sortable: true},
+        {title: '创建时间', field: 'createTime', align: 'center', valign: 'middle', sortable: true}];
     return columns;
 };
 
-//性别字段格式化
-function sexFormatter(value) {
-    if (value == 1) { 
-    	value = '男'; 
+//订单状态字段格式化
+//订单状态：0待付款 1待发货 2待收货 3待评价 4退款中 5已完成 6已取消 7已退款 8拒绝退款
+function statusFormatter(value) {
+    if (value == 0) { 
+    	value = '待付款'; 
+    }else if (value == 1) { 
+    	value = '待发货'; 
     }else if (value == 2) { 
-    	value = '女'; 
+    	value = '待收货'; 
+    }else if (value == 3) { 
+    	value = '待评价'; 
+    }else if (value == 4) { 
+    	value = '退款中'; 
+    }else if (value == 5) { 
+    	value = '已完成'; 
+    }else if (value == 6) { 
+    	value = '已取消'; 
+    }else if (value == 7) { 
+    	value = '已退款'; 
+    }else if (value == 8) { 
+    	value = '拒绝退款'; 
     }else { 
     	value = '未知'; 
     }
     return value;
 };
-//用户状态字段格式化
-function statusFormatter(value) {
-    var state;
-    if (value == 1) {
-    	state = "<span class='badge bg-green'  style='padding:5px 10px;'>启用</span>";
-    }else{
-    	state = "<span class='badge bg-red' style='padding:5px 10px;'>冻结</span>";
-    }
-    return state;
-};
 
 /**
  * 检查是否选中
  */
-MgrUser.check = function () {
+Orders.check = function () {
     var selected = $('#' + this.id).bootstrapTable('getSelections');
     if (selected.length == 0) {
         Feng.info("请先选中表格中的某一记录！");
         return false;
     } else {
-        MgrUser.seItem = selected[0];
+        Orders.seItem = selected[0];
         return true;
     }
 };
@@ -67,7 +71,7 @@ MgrUser.check = function () {
 /**
  * 点击添加管理员
  */
-MgrUser.openAddMgr = function () {
+Orders.openAddMgr = function () {
     var index = layer.open({
         type: 2,
         title: '添加管理员',
@@ -83,7 +87,7 @@ MgrUser.openAddMgr = function () {
  * 点击修改按钮时
  * @param userId 管理员id
  */
-MgrUser.openChangeUser = function () {
+Orders.openChangeUser = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
@@ -98,10 +102,27 @@ MgrUser.openChangeUser = function () {
 };
 
 /**
+ * 点击查看按钮时
+ */
+Orders.openView = function () {
+    if (this.check()) {
+        var index = layer.open({
+            type: 2,
+            title: '查看订单',
+            area: ['800px', '450px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/orders/view?id=' + this.seItem.id
+        });
+        this.layerIndex = index;
+    }
+};
+
+/**
  * 点击角色分配
  * @param
  */
-MgrUser.roleAssign = function () {
+Orders.roleAssign = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
@@ -118,11 +139,11 @@ MgrUser.roleAssign = function () {
 /**
  * 删除用户
  */
-MgrUser.delMgrUser = function () {
+Orders.delOrders = function () {
     if (this.check()) {
 
     	var operation = function(){
-            var userId = MgrUser.seItem.id;
+            var userId = Orders.seItem.id;
 			var ids = new Array();
 			ids[0] = userId;
 			var paramsData = {};
@@ -130,7 +151,7 @@ MgrUser.delMgrUser = function () {
             var ajax = new $ax(Feng.ctxPath + "/mgr/delete", function (data) {
             	if(data.code == 1){
             		Feng.success("删除成功!");
-                    MgrUser.table.refresh();
+                    Orders.table.refresh();
             	}else{
             		Feng.error("删除失败!"+data.message);
             	}
@@ -142,7 +163,7 @@ MgrUser.delMgrUser = function () {
             ajax.start();
         };
 
-        Feng.confirm("是否删除用户" + MgrUser.seItem.account + "?",operation);
+        Feng.confirm("是否删除用户" + Orders.seItem.account + "?",operation);
     }
 };
 
@@ -150,12 +171,12 @@ MgrUser.delMgrUser = function () {
  * 冻结用户账户
  * @param userId
  */
-MgrUser.freezeAccount = function () {
+Orders.freezeAccount = function () {
     if (this.check()) {
         var userId = this.seItem.id;
         var ajax = new $ax(Feng.ctxPath + "/mgr/freeze", function (data) {
             Feng.success("冻结成功!");
-            MgrUser.table.refresh();
+            Orders.table.refresh();
         }, function (data) {
             Feng.error("冻结失败!" + data.responseJSON.message + "!");
         });
@@ -168,12 +189,12 @@ MgrUser.freezeAccount = function () {
  * 解除冻结用户账户
  * @param userId
  */
-MgrUser.unfreeze = function () {
+Orders.unfreeze = function () {
     if (this.check()) {
         var userId = this.seItem.id;
         var ajax = new $ax(Feng.ctxPath + "/mgr/unfreeze", function (data) {
             Feng.success("解除冻结成功!");
-            MgrUser.table.refresh();
+            Orders.table.refresh();
         }, function (data) {
             Feng.error("解除冻结失败!");
         });
@@ -185,7 +206,7 @@ MgrUser.unfreeze = function () {
 /**
  * 重置密码
  */
-MgrUser.resetPwd = function () {
+Orders.resetPwd = function () {
     if (this.check()) {
         var userId = this.seItem.id;
         parent.layer.confirm('是否重置密码为123456？', {
@@ -210,40 +231,34 @@ MgrUser.resetPwd = function () {
     }
 };
 
-MgrUser.resetSearch = function () {
+Orders.resetSearch = function () {
     $("#searchKey").val("");
     $("#beginTime").val("");
     $("#endTime").val("");
 
-    MgrUser.search();
+    Orders.search();
 }
 
-MgrUser.search = function () {
+Orders.search = function () {
     var queryData = {};
 
-    //queryData['deptid'] = MgrUser.deptid;
+    //queryData['deptid'] = Orders.deptid;
     queryData['searchKey'] = $("#searchKey").val();
     queryData['beginTime'] = $("#beginTime").val();
     queryData['endTime'] = $("#endTime").val();
 
-    MgrUser.table.refresh({query: queryData});
+    Orders.table.refresh({query: queryData});
 }
 
-MgrUser.onClickDept = function (e, treeId, treeNode) {
-    MgrUser.deptid = treeNode.id;
-    MgrUser.search();
+Orders.onClickDept = function (e, treeId, treeNode) {
+    Orders.deptid = treeNode.id;
+    Orders.search();
 };
 
 $(function () {
-    var defaultColunms = MgrUser.initColumn();
-    var table = new BSTable("managerTable", "/mgr/listByPage", defaultColunms);
+    var defaultColunms = Orders.initColumn();
+    var table = new BSTable("ordersTable", "/orders/listByPage", defaultColunms);
     table.setMethod("get");
     table.setPaginationType("server");
-    //var table = new BSTable("managerTable", "/mgr/list", defaultColunms);
-    //table.setMethod("get");
-    //table.setPaginationType("client");
-    MgrUser.table = table.init();
-    //var ztree = new $ZTree("deptTree", "/dept/tree");
-    //ztree.bindOnClick(MgrUser.onClickDept);
-    //ztree.init();
+    Orders.table = table.init();
 });

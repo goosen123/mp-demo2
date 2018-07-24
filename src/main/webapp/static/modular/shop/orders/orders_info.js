@@ -1,7 +1,7 @@
 /**
  * 用户详情对话框（可用于添加和修改对话框）
  */
-var UserInfoDlg = {
+var OrdersInfoDlg = {
     userInfoData: {},
     validateFields: {
         account: {
@@ -53,7 +53,7 @@ var UserInfoDlg = {
 /**
  * 清除数据
  */
-UserInfoDlg.clearData = function () {
+OrdersInfoDlg.clearData = function () {
     this.userInfoData = {};
 };
 
@@ -63,7 +63,7 @@ UserInfoDlg.clearData = function () {
  * @param key 数据的名称
  * @param val 数据的具体值
  */
-UserInfoDlg.set = function (key, val) {
+OrdersInfoDlg.set = function (key, val) {
     this.userInfoData[key] = (typeof value == "undefined") ? $("#" + key).val() : value;
     return this;
 };
@@ -74,15 +74,15 @@ UserInfoDlg.set = function (key, val) {
  * @param key 数据的名称
  * @param val 数据的具体值
  */
-UserInfoDlg.get = function (key) {
+OrdersInfoDlg.get = function (key) {
     return $("#" + key).val();
 };
 
 /**
  * 关闭此对话框
  */
-UserInfoDlg.close = function () {
-    parent.layer.close(window.parent.MgrUser.layerIndex);
+OrdersInfoDlg.close = function () {
+    parent.layer.close(window.parent.Orders.layerIndex);
 };
 
 /**
@@ -93,7 +93,7 @@ UserInfoDlg.close = function () {
  * @param treeNode
  * @returns
  */
-UserInfoDlg.onClickDept = function (e, treeId, treeNode) {
+OrdersInfoDlg.onClickDept = function (e, treeId, treeNode) {
     $("#citySel").attr("value", instance.getSelectedVal());
     $("#deptid").attr("value", treeNode.id);
 };
@@ -103,7 +103,7 @@ UserInfoDlg.onClickDept = function (e, treeId, treeNode) {
  *
  * @returns
  */
-UserInfoDlg.showDeptSelectTree = function () {
+OrdersInfoDlg.showDeptSelectTree = function () {
     var cityObj = $("#citySel");
     var cityOffset = $("#citySel").offset();
     $("#menuContent").css({
@@ -119,7 +119,7 @@ UserInfoDlg.showDeptSelectTree = function () {
  *
  * @returns
  */
-UserInfoDlg.showInfoDeptSelectTree = function () {
+OrdersInfoDlg.showInfoDeptSelectTree = function () {
     var cityObj = $("#citySel");
     var cityPosition = $("#citySel").position();
     $("#menuContent").css({
@@ -133,7 +133,7 @@ UserInfoDlg.showInfoDeptSelectTree = function () {
 /**
  * 隐藏部门选择的树
  */
-UserInfoDlg.hideDeptSelectTree = function () {
+OrdersInfoDlg.hideDeptSelectTree = function () {
     $("#menuContent").fadeOut("fast");
     $("body").unbind("mousedown", onBodyDown);// mousedown当鼠标按下就可以触发，不用弹起
 };
@@ -141,7 +141,7 @@ UserInfoDlg.hideDeptSelectTree = function () {
 /**
  * 收集数据
  */
-UserInfoDlg.collectData = function () {
+OrdersInfoDlg.collectData = function () {
     this.set('id').set('account').set('userSex').set('password').set('avatar')
         .set('userEmail').set('userName').set('rePassword').set('userPhone');//.set('birthday').set('deptid')
 };
@@ -149,7 +149,7 @@ UserInfoDlg.collectData = function () {
 /**
  * 验证两个密码是否一致
  */
-UserInfoDlg.validatePwd = function () {
+OrdersInfoDlg.validatePwd = function () {
     var password = this.get("password");
     var rePassword = this.get("rePassword");
     if (password == rePassword) {
@@ -162,7 +162,7 @@ UserInfoDlg.validatePwd = function () {
 /**
  * 验证数据是否为空
  */
-UserInfoDlg.validate = function () {
+OrdersInfoDlg.validate = function () {
     $('#userInfoForm').data("bootstrapValidator").resetForm();
     $('#userInfoForm').bootstrapValidator('validate');
     return $("#userInfoForm").data('bootstrapValidator').isValid();
@@ -171,7 +171,7 @@ UserInfoDlg.validate = function () {
 /**
  * 提交添加用户
  */
-UserInfoDlg.addSubmit = function () {
+OrdersInfoDlg.addSubmit = function () {
 
     this.clearData();
     this.collectData();
@@ -194,7 +194,7 @@ UserInfoDlg.addSubmit = function () {
     	if(data.code == 1){
     		Feng.success("添加成功!");
             window.parent.MgrUser.table.refresh();
-            UserInfoDlg.close();
+            OrdersInfoDlg.close();
     	}else{
     		Feng.error("添加失败!"+data.message);
     	}
@@ -209,7 +209,7 @@ UserInfoDlg.addSubmit = function () {
 /**
  * 提交修改
  */
-UserInfoDlg.editSubmit = function () {
+OrdersInfoDlg.editSubmit = function () {
 
     this.clearData();
     this.collectData();
@@ -227,7 +227,7 @@ UserInfoDlg.editSubmit = function () {
     	if(data.code == 1){
     		Feng.success("修改成功!");
             window.parent.MgrUser.table.refresh();
-            UserInfoDlg.close();
+            OrdersInfoDlg.close();
     	}else{
     		Feng.error("修改失败!"+data.message);
     	}
@@ -240,9 +240,9 @@ UserInfoDlg.editSubmit = function () {
 };
 
 /**
- * 获取用户信息详情
+ * 获取订单信息详情
  */
-UserInfoDlg.getUserDetail = function () {
+OrdersInfoDlg.getOrdersDetail = function () {
 	var id = $("#id").val();
     if(id == null || id == 'undefined' || id == ''){
     	return;
@@ -250,13 +250,16 @@ UserInfoDlg.getUserDetail = function () {
     var data = {};
 	data['id'] = id;
 	//提交请求
-    var ajax = new $ax(Feng.ctxPath + "/mgr/getDetail", function (data) {
+    var ajax = new $ax(Feng.ctxPath + "/orders/getDetail", function (data) {
     	if(data.code == 1){
-     	   $("#account").val(data.data.account);
-     	   $("#userEmail").val(data.data.userEmail);
      	   $("#userName").val(data.data.userName);
-     	   $("#userPhone").val(data.data.userPhone);
-		   $("#userSex").val(data.data.userSex);
+     	   $("#code").val(data.data.code);
+     	   $("#orderTitle").val(data.data.orderTitle);
+     	   $("#totalCost").val(data.data.totalCost);
+		   $("#totalVolume").val(data.data.totalVolume);
+		   $("#orderStatus").val(data.data.orderStatus);
+		   $("#orderRemark").val(data.data.orderRemark);
+		   $("#createTime").val(data.data.createTime);
 		}
     }, function (data) {
     	;
@@ -264,32 +267,12 @@ UserInfoDlg.getUserDetail = function () {
     ajax.setType('get');
     ajax.set(data);
     ajax.start();
-//	$.ajax({
-//        type: 'get',
-//        url: Feng.ctxPath + '/mgr/getDetail',
-//        data: data,
-//        dataType: 'json',
-//        contentType : 'application/json',
-//        success: function getData(data) {
-//           console.log("data",data);
-//           if(data.code == 1){
-//        	   $("#account").val(data.data.account);
-//        	   $("#userEmail").val(data.data.userEmail);
-//        	   $("#userName").val(data.data.userName);
-//        	   $("#userPhone").val(data.data.userPhone);
-//			   $("#userSex").val(data.data.userSex);
-//		   }
-//        },
-//        error: function getErrorData(data) {
-//        	;
-//        }
-//    });
 };
 
 /**
  * 修改密码
  */
-UserInfoDlg.chPwd = function () {
+OrdersInfoDlg.chPwd = function () {
 	
 	var paramsData = {};
 	var oldPwd = $("#oldPwd").val();
@@ -328,28 +311,14 @@ UserInfoDlg.chPwd = function () {
 function onBodyDown(event) {
     if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(
             event.target).parents("#menuContent").length > 0)) {
-        UserInfoDlg.hideDeptSelectTree();
+        OrdersInfoDlg.hideDeptSelectTree();
     }
 }
 
 $(function () {
-    Feng.initValidator("userInfoForm", UserInfoDlg.validateFields);
+    //Feng.initValidator("ordersInfoForm", OrdersInfoDlg.validateFields);
     
-    //如果是修改的话，获取用户
-    UserInfoDlg.getUserDetail();
-    
-//    var ztree = new $ZTree("treeDemo", "/dept/tree");
-//    ztree.bindOnClick(UserInfoDlg.onClickDept);
-//    ztree.init();
-//    instance = ztree;
-
-    //初始化性别选项
-    //$("#sex").val($("#sexValue").val());
-
-    // 初始化头像上传
-    var avatarUp = new $WebUpload("avatar");
-    avatarUp.setUploadBarId("progressBar");
-    avatarUp.init();
-
+    //如果是修改的话，获取详情
+    OrdersInfoDlg.getOrdersDetail();
 
 });

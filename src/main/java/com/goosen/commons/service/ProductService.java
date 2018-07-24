@@ -18,5 +18,7 @@ public interface ProductService extends BaseService<Product>{
 	PageInfo<Map<String,Object>> findByParamsByPage(Map<String,Object> params);
     
 	Map<String,Object> findOneByParams(Map<String,Object> params);
+	
+	List<Map<String,Object>> findByParamsByPage2(Map<String,Object> params);
     
 }

@@ -83,5 +83,12 @@ public class OrdersServiceImpl extends BaseServiceImpl<Orders> implements Orders
 		}
 		return orderCode;
 	}
+
+	@Override
+	public List<Map<String, Object>> findByParamsByPage2(Map<String, Object> params) {
+		PageHelper.startPage(CommonUtil.getIntValue(params, "pageNum"),CommonUtil.getIntValue(params, "pageSize"));
+		List<Map<String, Object>> list = findByParams(params);
+		return list;
+	}
     
 }

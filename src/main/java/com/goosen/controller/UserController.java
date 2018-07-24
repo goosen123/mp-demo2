@@ -26,14 +26,18 @@ import com.goosen.commons.enums.ResultCode;
 import com.goosen.commons.exception.BusinessException;
 import com.goosen.commons.model.po.User;
 import com.goosen.commons.model.request.BaseDeleteReqData;
+import com.goosen.commons.model.request.user.UserPasswordReqData;
+import com.goosen.commons.model.request.user.UserPasswordResetReqData;
 import com.goosen.commons.model.request.user.UserReqData;
 import com.goosen.commons.model.response.BaseCudRespData;
 import com.goosen.commons.model.response.user.UserRespData;
 import com.goosen.commons.page.PageInfoBT;
 import com.goosen.commons.service.UserService;
+import com.goosen.commons.shiro.ShiroKit;
 import com.goosen.commons.utils.BeanUtil;
 import com.goosen.commons.utils.CheckUtil;
 import com.goosen.commons.utils.CommonUtil;
+import com.goosen.commons.utils.EncryUtil;
 import com.goosen.commons.utils.IdGenUtil;
 
 @Api(value="用户管理",description="用户管理")
@@ -93,11 +97,20 @@ public class UserController extends BaseController{
      */
 	@GetMappingNoLog
     @RequestMapping(value = {"userInfo"},method=RequestMethod.GET)
-    public String userInfo(@ApiParam(name="id",value="用户id",required=true)String id,Model model) {
-		model.addAttribute("id", id);
+    public String userInfo(Model model) {
+		String userId = ShiroKit.getUser().getId();
+		model.addAttribute("id", userId);
 		return PREFIX + "user_view.html";
     }
 	
+	/**
+     * 跳转到修改密码页面
+     */
+	@GetMappingNoLog
+    @RequestMapping(value = {"userChpwd"},method=RequestMethod.GET)
+    public String userChpwd() {
+		return PREFIX + "user_chpwd.html";
+    }
 	
 	@ApiOperation(value="添加用户")
 	@ResponseResult
@@ -141,6 +154,52 @@ public class UserController extends BaseController{
 		//账号不给修改
 		reqData.setAccount(null);
 		BeanUtil.beanCopyNotNull(record, reqData);
+		userService.update(record);
+		
+		return buildBaseCudRespData("");
+	}
+	
+	@ApiOperation(value="重置用户密码")
+	@ResponseResult
+	@RequestMapping(value = {"reset"},method=RequestMethod.POST)
+	@ResponseBody
+	public BaseCudRespData<String> reset(@Validated @RequestBody UserPasswordResetReqData reqData) {
+		
+		String id = reqData.getId();
+		User record = userService.findById(id);
+		if(record == null)
+			throw new BusinessException(ResultCode.USER_HAS_EXISTED);
+		
+		String newPwd = "123456";
+		newPwd = EncryUtil.encodeByMD5(newPwd);
+		record.setPassword(newPwd);
+		userService.update(record);
+		
+		return buildBaseCudRespData("");
+	}
+	
+	@ApiOperation(value="修改当前用户密码")
+	@ResponseResult
+	@RequestMapping(value = {"changePwd"},method=RequestMethod.POST)
+	@ResponseBody
+	public BaseCudRespData<String> changePwd(@Validated @RequestBody UserPasswordReqData reqData) {
+		
+		String newPwd = reqData.getNewPwd();
+		String rePwd = reqData.getRePwd();
+		String oldPwd = reqData.getOldPwd();
+		if(!newPwd.equals(rePwd))
+			throw new BusinessException(ResultCode.USER_TWOPWD);
+		String userId = ShiroKit.getUser().getId();
+		if(CommonUtil.isTrimNull(userId))
+			throw new BusinessException(ResultCode.USER_NOT_LOGGED_IN);
+		User record = userService.findById(userId);
+		if(record == null)
+			throw new BusinessException(ResultCode.USER_HAS_EXISTED);
+		String oldPwdFan = record.getPassword();
+		if(!oldPwd.equals(oldPwdFan))
+			throw new BusinessException(ResultCode.USER_OLDPWD);
+		
+		record.setPassword(newPwd);
 		userService.update(record);
 		
 		return buildBaseCudRespData("");

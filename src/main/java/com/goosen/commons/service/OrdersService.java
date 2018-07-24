@@ -20,5 +20,7 @@ public interface OrdersService extends BaseService<Orders>{
 	Map<String,Object> findOneByParams(Map<String,Object> params);
 	
 	String createOrdersCode();
+	
+	List<Map<String,Object>> findByParamsByPage2(Map<String,Object> params);
     
 }

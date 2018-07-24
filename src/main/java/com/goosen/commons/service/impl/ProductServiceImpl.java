@@ -50,5 +50,12 @@ public class ProductServiceImpl extends BaseServiceImpl<Product> implements Prod
 			resultMap = list.get(0);
 		return resultMap;
 	}
+
+	@Override
+	public List<Map<String, Object>> findByParamsByPage2(Map<String, Object> params) {
+		PageHelper.startPage(CommonUtil.getIntValue(params, "pageNum"),CommonUtil.getIntValue(params, "pageSize"));
+		List<Map<String, Object>> list = findByParams(params);
+		return list;
+	}
     
 }

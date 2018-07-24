@@ -10,6 +10,8 @@ public class OrdersRespData extends BaseResp{
 	
 	private static final long serialVersionUID = 3536431311056183802L;
 	
+	@ApiModelProperty(value = "订单id",example="618eb09683d946ddb747a5b8ebc300e4")
+	private String id;
 	@ApiModelProperty(value = "订单号",example="O2018071000001")
 	private String code;
 	@ApiModelProperty(value = "用户id",example="618eb09683d946ddb747a5b8ebc300e4")
@@ -26,6 +28,8 @@ public class OrdersRespData extends BaseResp{
     private Integer orderStatus;
 	@ApiModelProperty(value = "订单备注",example="小心轻放")
     private String orderRemark;
+	@ApiModelProperty(value = "创建时间",example="2018-06-29 18:11:08")
+	private String createTime;
 	
 	public String getCode() {
 		return code;
@@ -74,6 +78,18 @@ public class OrdersRespData extends BaseResp{
 	}
 	public void setOrderRemark(String orderRemark) {
 		this.orderRemark = orderRemark;
+	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 }

@@ -1,0 +1,46 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal" id="ordersInfoForm">
+			
+			<input type="hidden" id="id" value="${id}">
+			
+			<div class="row">
+				<div class="col-sm-6 b-r">
+					 <#input id="userName" name="用户名称" underline="true"  disabled="disabled" />
+					 <#input id="code" name="订单号" disabled="disabled" />
+                     <#input id="orderTitle" name="订单标题" disabled="disabled" />
+                     <#input id="totalCost" name="订单总金额（元）" disabled="disabled" />
+				</div>
+				<div class="col-sm-6">
+					<div id="driverInfoContent">
+						<#input id="totalVolume" name="订单数量" underline="true" disabled="disabled"/>
+                        <#select id="orderStatus" name="订单状态" disabled="disabled">
+                           <option value="0">待付款</option>
+                           <option value="1">待发货</option>
+                           <option value="2">待收货</option>
+                           <option value="3">待评价</option>
+                           <option value="4">退款中</option>
+                           <option value="5">已完成</option>
+                           <option value="6">已取消</option>
+                           <option value="7">已退款</option>
+                           <option value="8">拒绝退款</option>
+                        </#select>
+                        <#input id="orderRemark" name="订单备注" disabled="disabled"/>
+                        <#input id="createTime" name="下单时间" disabled="disabled"/>
+					</div>
+				</div>
+				<#table id="ordersTable"/>
+			</div>
+
+			<div class="row btn-group-m-t">
+				<div class="col-sm-10">
+					<#button btnCss="danger" name="关闭" id="cancel" icon="fa-eraser" clickFun="OrdersInfoDlg.close()"/>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<script src="${ctxPath}/static/modular/shop/orders/orders_info.js"></script>
+@}

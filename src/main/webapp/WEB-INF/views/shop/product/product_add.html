@@ -1,0 +1,35 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal" id="productInfoForm">
+		
+			<input type="hidden" id="id" value="">
+
+			<div class="row">
+				<div class="col-sm-6 b-r">
+					<#input id="code" name="编号" underline="true"/>
+					<#input id="coverPic" name="封面" />
+					<#input id="productTitle" name="标题" />
+					<#input id="productBrief" name="商品简介" />
+				</div>
+				<div class="col-sm-6">
+					<div id="driverInfoContent">
+						<#input id="productDesc" name="详情介绍" underline="true"/>
+						<#input id="originalPrice" name="原价（元）" />
+						<#input id="salePrice" name="售价（元）"/>
+					</div>
+				</div>
+			</div>
+
+			<div class="row btn-group-m-t">
+				<div class="col-sm-10">
+					<#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ProductInfoDlg.addSubmit()"/>
+					<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ProductInfoDlg.close()"/>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<script src="${ctxPath}/static/modular/shop/product/product_info.js"></script>
+@}

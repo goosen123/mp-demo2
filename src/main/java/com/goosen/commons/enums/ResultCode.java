@@ -26,6 +26,8 @@ public enum ResultCode {
 	USER_NOT_EXIST(20004, "用户不存在"),
 	USER_HAS_EXISTED(20005, "用户已存在"),
 	LOGIN_CREDENTIAL_EXISTED(20006, "凭证已存在"),
+	USER_TWOPWD(20007, "两次输入的密码不一致"),
+	USER_OLDPWD(20008, "原密码不正确"),
 
 	/* 业务错误：30001-39999 */
 	SPECIFIED_QUESTIONED_USER_NOT_EXIST(30001, "业务错误"),
