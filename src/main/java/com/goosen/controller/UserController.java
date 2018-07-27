@@ -238,7 +238,7 @@ public class UserController extends BaseController{
 	
 	@ApiOperation(value="获取用户列表")
 	@GetMappingNoLog
-	@ResponseResult
+//	@ResponseResult
 	@RequestMapping(value = {"list"},method=RequestMethod.GET)//
 	@ResponseBody
     public List<UserRespData> list(@ApiParam(name="userName",value="用户名称")String userName) throws Exception{

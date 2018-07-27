@@ -124,7 +124,7 @@ Role.assign = function () {
 Role.search = function () {
 	var queryData = {};
 
-    queryData['name'] = $("#roleName").val();
+    queryData['roleName'] = $("#roleName").val();
 
     Role.table.refresh({query: queryData});
 }

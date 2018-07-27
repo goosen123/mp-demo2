@@ -141,7 +141,7 @@ Orders.roleAssign = function () {
  */
 Orders.delOrders = function () {
     if (this.check()) {
-
+    	
     	var operation = function(){
             var userId = Orders.seItem.id;
 			var ids = new Array();

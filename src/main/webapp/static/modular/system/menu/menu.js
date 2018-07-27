@@ -21,13 +21,13 @@ Menu.initColumn = function () {
         {title: '请求地址', field: 'url', align: 'center', valign: 'middle', sortable: true,width:'15%'},
         {title: '排序', field: 'num', align: 'center', valign: 'middle', sortable: true},
         {title: '层级', field: 'levels', align: 'center', valign: 'middle', sortable: true},
-        {title: '是否是菜单', field: 'ismenu', align: 'center', valign: 'middle',formatter:ismenuFormatter, sortable: true},
-        {title: '状态', field: 'status', align: 'center', valign: 'middle',formatter:statusFormatter, sortable: true}]
+        {title: '是否是菜单', field: 'ismenu', align: 'center', valign: 'middle', sortable: true},//formatter:Menu.ismenuFormatter,
+        {title: '状态', field: 'status', align: 'center', valign: 'middle', sortable: true}]//formatter:statusFormatter,
     return columns;
 };
 
 //是否菜单字段格式化
-function ismenuFormatter(value) {
+Menu.ismenuFormatter = function (value) {
     if (value ==  1) {
     	value = '是'; 
     }else{
@@ -36,7 +36,7 @@ function ismenuFormatter(value) {
     return value;
 };
 //菜单状态字段格式化
-function statusFormatter(value) {
+Menu.statusFormatter = function (value) {
     var state;
     if (value == 1) {
     	state = "<span class='badge bg-green'  style='padding:5px 10px;'>启用</span>";

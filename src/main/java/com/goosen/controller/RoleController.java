@@ -199,11 +199,11 @@ public class RoleController extends BaseController{
 	@ResponseResult
 	@RequestMapping(value = {"listByPage"},method=RequestMethod.GET)
 	@ResponseBody
-    public PageInfoBT<RoleRespData> listByPage(@ApiParam(name="name",value="角色名称")String name) throws Exception {
+    public PageInfoBT<RoleRespData> listByPage(@ApiParam(name="roleName",value="角色名称")String roleName) throws Exception {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
-		if(!CommonUtil.isTrimNull(name))
-			params.put("name", name);
+		if(!CommonUtil.isTrimNull(roleName))
+			params.put("name", roleName);
 		defaultPage(params);
 		List<Map<String, Object>> list = roleService.findByParamsByPage2(params);
 		

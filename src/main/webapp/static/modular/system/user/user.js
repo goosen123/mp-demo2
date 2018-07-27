@@ -18,18 +18,18 @@ MgrUser.initColumn = function () {
         {title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle'},
         {title: '账号', field: 'account', align: 'center', valign: 'middle', sortable: true},
         {title: '姓名', field: 'userName', align: 'center', valign: 'middle', sortable: true},
-        {title: '性别', field: 'userSex', align: 'center', valign: 'middle',formatter:sexFormatter, sortable: true},
+        {title: '性别', field: 'userSex', align: 'center', valign: 'middle',formatter:MgrUser.sexFormatter, sortable: true},
         {title: '角色', field: 'roleName', align: 'center', valign: 'middle', sortable: true},
         {title: '部门', field: 'deptName', align: 'center', valign: 'middle', sortable: true},
         {title: '邮箱', field: 'userEmail', align: 'center', valign: 'middle', sortable: true},
         {title: '电话', field: 'userPhone', align: 'center', valign: 'middle', sortable: true},
         {title: '创建时间', field: 'createTime', align: 'center', valign: 'middle', sortable: true},
-        {title: '状态', field: 'status', align: 'center', valign: 'middle',formatter:statusFormatter, sortable: true}];
+        {title: '状态', field: 'status', align: 'center', valign: 'middle',formatter:MgrUser.statusFormatter, sortable: true}];
     return columns;
 };
 
 //性别字段格式化
-function sexFormatter(value) {
+MgrUser.sexFormatter = function (value) {
     if (value == 1) { 
     	value = '男'; 
     }else if (value == 2) { 
@@ -40,7 +40,7 @@ function sexFormatter(value) {
     return value;
 };
 //用户状态字段格式化
-function statusFormatter(value) {
+MgrUser.statusFormatter = function (value) {
     var state;
     if (value == 1) {
     	state = "<span class='badge bg-green'  style='padding:5px 10px;'>启用</span>";
